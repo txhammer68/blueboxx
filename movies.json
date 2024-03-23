@@ -1,0 +1,62 @@
+[
+{
+    "title": "Antitrust",
+    "overview": "A computer programmer's dream job at a hot Portland-based firm turns nightmarish when he discovers his boss has a secret and ruthless means of dispatching anti-trust problems.",
+    "rating": 6.0,
+    "poster_path": "/9PXyfcJe53A9qFkcj5dkTJwIWoS.jpg",
+    "backdrop_path": "/1ucqnkuZLgC4wuhaIYqleRpW06.jpg",
+    "runtime": "1:48",
+    "release_date": "2001-01-11",
+    "genre": "Action,Crime,Drama,",
+    "trailer": "Antitrust - Trailer.mp4",
+    "link": "Antitrust.mp4"
+  },
+{
+    "title": "The Fifth Estate",
+    "overview": "A look at the relationship between WikiLeaks founder Julian Assange and his early supporter and eventual colleague Daniel Domscheit-Berg, and how the website's growth and influence led to an irreparable rift between the two friends.",
+    "rating": 6.0,
+    "poster_path": "/pUrL2eacUjAxkOS403DaOyXpgAG.jpg",
+    "backdrop_path": "/iOjnDSrGvimvk4jpPLZSzDWSP47.jpg",
+    "runtime": "2:08",
+    "release_date": "2013-10-11",
+    "genre": "Drama,Thriller,",
+    "trailer": "The Fifth Estate - Trailer.mp4",
+    "link": "The Fifth Estate.mp4"
+  },
+{
+    "title": "The Internet's Own Boy: The Story of Aaron Swartz",
+    "overview": "Programming prodigy and information activist Aaron Swartz achieved groundbreaking work in social justice and political organizing. His passion for open access ensnared him in a legal nightmare that ended with the taking of his own life at the age of 26.",
+    "rating": 7.9,
+    "poster_path": "/s8qznCAjPRcRwQkvGU6rRdF7mxb.jpg",
+    "backdrop_path": "/o85Xk5nCcx4NWlYKLm9ebrQaqMI.jpg",
+    "runtime": "1:45",
+    "release_date": "2014-06-27",
+    "genre": "Documentary,Crime,",
+    "trailer": "The Internet's Own Boy: The Story of Aaron Swartz - Trailer.mp4",
+    "link": "The Internet's Own Boy: The Story of Aaron Swartz.mp4"
+  },
+  {
+    "title": "Snowden",
+    "overview": "CIA employee Edward Snowden leaks thousands of classified documents to the press.",
+    "rating": 7.1,
+    "poster_path": "/yfK7zxNL63VWfluFuoUaJj5PdNw.jpg",
+    "backdrop_path": "/mYZYVrQ2ghU3m79q7byeLzNXo1M.jpg",
+    "runtime": "2:14",
+    "release_date": "2016-09-15",
+    "genre": "Drama,History,Crime,Thriller,",
+    "trailer": "Snowden - Trailer.mp4",
+    "link": "Snowden.mp4"
+  },
+  {
+    "title": "The Social Network",
+    "overview": "In 2003, Harvard undergrad and computer genius Mark Zuckerberg begins work on a new concept that eventually turns into the global social network known as Facebook. Six years later, he is one of the youngest billionaires ever, but Zuckerberg finds that his unprecedented success leads to both personal and legal complications when he ends up on the receiving end of two lawsuits, one involving his former friend.",
+    "rating": 7.4,
+    "poster_path": "/n0ybibhJtQ5icDqTp8eRytcIHJx.jpg",
+    "backdrop_path": "/2BNKxbq4muNcwTjSDNCYnvr1dM8.jpg",
+    "runtime": "2:01",
+    "release_date": "2010-10-01",
+    "genre": "Drama,",
+    "trailer": "The Social Network - Trailer.mp4",
+    "link": "The Social Network.mp4"
+  }
+]

@@ -1,0 +1,82 @@
+https://api.themoviedb.org/3/movie/2001?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95
+     -title
+     -overview
+     -release_date
+     -runtime
+     -genres[]
+     -backdrop_path
+     -poster_path
+
+
+
+
+
+https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95
+
+https://api.themoviedb.org/3/search/movie?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95&query="Batman"
+
+https://api.themoviedb.org/3/discover/movie?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95
+
+https://api.themoviedb.org/3/movie/{movie.id}/watch/providers?api_key="
+
+https://api.themoviedb.org/3/search/movie?query=Bad+Words&api_key=fde5ddeba3b7dec3fc1f51852ca0fb95
+
+curl --request GET \
+     --url 'https://api.themoviedb.org/3/movie/209403?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95'
+
+query by movie id, list from .csv
+8065
+1271
+530915
+452507
+4437
+
+1100 titles, change page # to get 20 results at a time
+
+curl --request GET \
+     --url 'https://api.themoviedb.org/4/list/8274688?language=en-US&page=1' \
+     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTE1MzQ5ZWQ2OGI2OWFmMTEwMDJmNWVhMzhhYThjNiIsInN1YiI6IjYzZjFhMWJjYTI0YzUwMDBkNGUzOWNjYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.t3SAOPr_XGTTpe2d4gBMyxs9_3WDSVVXBJP9t_q7YJk' \
+     --header 'accept: application/json' > p1.json
+
+curl --request GET \
+     --url 'https://api.themoviedb.org/4/list/8274688?language=en-US&page=2' \
+     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTE1MzQ5ZWQ2OGI2OWFmMTEwMDJmNWVhMzhhYThjNiIsInN1YiI6IjYzZjFhMWJjYTI0YzUwMDBkNGUzOWNjYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.t3SAOPr_XGTTpe2d4gBMyxs9_3WDSVVXBJP9t_q7YJk' \
+     --header 'accept: application/json' > p2.json
+
+
+https://api.themoviedb.org/3/list/list_id/item_status?language=en-US' \
+
+https://api.themoviedb.org/3/search/movie?api_key=7915349ed68b69af11002f5ea38aa8c6&query="Batman"
+
+https://api.themoviedb.org/3/list/8274688?language=en-US&page=1?api_key=7915349ed68b69af11002f5ea38aa8c6
+// limited to 20 results
+
+https://api.themoviedb.org/3/movie/+8065?api_key=7915349ed68b69af11002f5ea38aa8c6
+// only one at a time
+
+https://api.themoviedb.org/3/movie+8065?api_key=7915349ed68b69af11002f5ea38aa8c6
+
+https://api.themoviedb.org/3/movie/11,8065,1271?api_key=7915349ed68b69af11002f5ea38aa8c6
+
+
+curl --request GET \
+     --url 'https://api.themoviedb.org/3/list/8274688?language=en-US&page=1' \
+     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OTE1MzQ5ZWQ2OGI2OWFmMTEwMDJmNWVhMzhhYThjNiIsInN1YiI6IjYzZjFhMWJjYTI0YzUwMDBkNGUzOWNjYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.t3SAOPr_XGTTpe2d4gBMyxs9_3WDSVVXBJP9t_q7YJk' \
+     --header 'accept: application/json'
+
+https://api.themoviedb.org/3/movie/+497,8065,1271,530915,452507,4437?api_key=fde5ddeba3b7dec3fc1f51852ca0fb95
+https://api.themoviedb.org/3/movie/+8065?api_key=7915349ed68b69af11002f5ea38aa8c6
+
+bulk download .json for each movie link to movie for details
+
+backdrop path
+/kGzFbGhp99zva6oZODW5atUtnqi.jpg
+https://image.tmdb.org/t/p/w500/+path
+https://image.tmdb.org/t/p/w500/kGzFbGhp99zva6oZODW5atUtnqi.jpg
+
+poster path
+https://image.tmdb.org/t/p/w500/+path
+https://image.tmdb.org/t/p/w500/rsKhSr3UNjG2DhVj2KPj0ARujez.jpg
+
+/kGzFbGhp99zva6oZODW5atUtnqi.jpg
+1E5baAaEse26fej7uHcjOgEE2t2.jpg

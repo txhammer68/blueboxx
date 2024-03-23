@@ -1,0 +1,44 @@
+https://api.themoviedb.org/3/movie/209403?api_key=your key here
+     -title
+     -overview
+     -release_date
+     -runtime
+     -genres[]
+     -backdrop_path
+     -poster_path
+
+backdrop_path	"/b7HsWYjyrVkDPkAFFAGZ76iainK.jpg"
+    wget https://image.tmdb.org/t/p/w1280/+backdrop_path
+
+poster_path
+    wget https://image.tmdb.org/t/p/w500/+poster_path
+
+
+Trailers
+https://api.themoviedb.org/3/movie/11548/videos?api_key=your key here
+use key to append url
+
+For example:
+Youtube: https://www.youtube.com/watch?v=ASWO43n3QkQ
+Youtube: https://www.youtube.com/watch?v=hzfvYSIIgyc
+Vimeo: https://vimeo.com/282875052
+
+
+more movie details
+https://api.themoviedb.org/3//movie/333371?api_key=your key here
+curl --request GET \
+     --url 'https://api.themoviedb.org/3/movie/333371?language=en-US' \
+     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIfOTE1MzQ5ZWQ2OGI2OMFmMTEwMDJmNWVhMbhYTcjNiIsIbN1YiI6IjYzZjFkMWJjYTI0YzUwMDBkNGUzOWNjYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.t3SAOPr_XGTTpe2d4gBMyxs9_3WDSVVXBJP9t_q7YJk' \
+     --header 'accept: application/json'
+
+
+https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=your key here
+
+https://api.themoviedb.org/3/search/movie?api_key=your key here&query="Batman"
+
+https://api.themoviedb.org/3/discover/movie?api_key=your key here
+
+https://api.themoviedb.org/3/movie/{movie.id}/watch/providers?api_key="
+
+https://api.themoviedb.org/3/search/movie?query=Bad+Words&api_key=your key here
+
