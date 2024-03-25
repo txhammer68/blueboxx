@@ -1,6 +1,6 @@
-## BlueBoxx Media App
+## BlueBoxx Media Manager App
 
-* Custom python/qml app for organizing movies/tv shows
+* Simple python/qml app for organizing movies/tv shows
 * Using json arrays for media lookup
 * Lighweight and Fast
 * Designed for 1920x1080 screens
@@ -36,7 +36,7 @@
 ### Notes
 * Change directories for your movie, tv and trailer locations in
     * BlueBoxx.qml
-* Within json array media links are predefined based on "media title.mp4", change for your needs
+* Within json array, media links are predefined based on "media title.mp4", change for your needs
 * Why Blueboxx, cause Redboxx provided most of the titles...
 
 <img alt="preview" src="preview.png" width="1280">
