@@ -13,8 +13,6 @@ QC25.Popup {
     //closePolicy: mediaInfoPopup.CloseOnEscape || mediaInfoPopup.CloseOnPressOutsideParent || mediaInfoPopup.CloseOnPressOutside
 
     property int selSeason:-1
-    property real backdropOpacity: 1.0
-    property color backdropColor:"black"
 
     onClosed: {
         Qt.cursorShape=Qt.ArrowCursor;
@@ -24,6 +22,7 @@ QC25.Popup {
         episodeInfo.text="";
         episodeRunTime.text="";
         episodeAirDate.text="";
+        scrollView.focus=true
     }
 
     QC25.Overlay.modal: GaussianBlur {
@@ -42,7 +41,7 @@ QC25.Popup {
                 from: 0.6;
                 to: 1.0;
                 easing.type: Easing.OutBack
-                duration: 750
+                duration: 600
             }
     }
 
@@ -57,25 +56,34 @@ QC25.Popup {
     }
 
     background: Rectangle {
-        border.color: "gray"
-        border.width:.5
+        //border.color: "gray"
+        //border.width:.5
         antialiasing:true
-        smooth:true
-        color:"black"
+        color:"transparent"
         radius:8
 
         Image{
+            id:tvBackdropImg
             source:"backdrops/"+tvArray[currentItem].backdrop_path
             anchors.centerIn:parent
             width:parent.width
             height:parent.height
             fillMode : Image.PreserveAspectStretch
-            opacity:.55
+            //opacity:.55
             smooth:true
-            //antialiasing:true
+            visible:false
         }
 
-
+        OpacityMask {
+                anchors.fill: tvBackdropImg
+                source: tvBackdropImg
+                maskSource: Rectangle {
+                width: tvBackdropImg.width
+                height: tvBackdropImg.height
+                radius: 8
+                visible: false // this also needs to be invisible or it will cover up the image
+                }
+            }
 
         Rectangle {
             id:titleBox
@@ -123,26 +131,24 @@ QC25.Popup {
                 anchors.horizontalCenter:parent.horizontalCenter
                 anchors.top:parent.top
                 color:"black"
+                border.color:"#55aaff"
+                border.width:.5
                 height:36
                 width:seasonsRow.width+36
                 opacity:.65
                 radius:12
+                antialiasing:true
             }
 
             Row {
                 id:seasonsRow
                 spacing:20
                 anchors.centerIn:seasonBox
-                //anchors.horizontalCenter:seasonBox.horizontalCenter
-                //anchors.top:seasonBox.top
 
                 QC25.ButtonGroup {
                     id: childGroup
                     exclusive: true
                     checkState: Qt.Unchecked
-                    //onCheckedButtonChanged: {
-                    //       selSeason=tempSelection
-                    //  }
                 }
                 Repeater {
                     model:tvArray[currentItem].seasons.length
@@ -183,6 +189,7 @@ QC25.Popup {
             radius:12
             opacity:.65
             visible:childGroup.checkState
+            antialiasing:true
 
             ListView {
                 id:episodeList
@@ -218,6 +225,14 @@ QC25.Popup {
                         }
                     }
                 }
+                onModelChanged:{
+                        opacity=0;
+                        opacity=1;}
+                    Behavior on opacity {
+                        OpacityAnimator {
+                            duration:300
+                            easing.type: Easing.InCubic
+                    }}
             }
         }
 
@@ -233,6 +248,7 @@ QC25.Popup {
             radius:12
             opacity:.65
             visible:episodeTitle.text
+            antialiasing:true
 
             Text {
                 id:episodeTitle
@@ -280,6 +296,14 @@ QC25.Popup {
                     }
                     onClicked:Qt.openUrlExternally( tvDir+tvArray[currentItem].seasons[selSeason].episodes[index].link)
                 }
+                onTextChanged:{
+                        opacity=0;
+                        opacity=1;}
+                    Behavior on opacity {
+                        OpacityAnimator {
+                            duration:300
+                            easing.type: Easing.InCubic
+                    }}
             }
             Row {
                 id:episodeFooter
@@ -287,7 +311,6 @@ QC25.Popup {
                 anchors.horizontalCenter:episodeInfoBox.horizontalCenter
                 anchors.bottomMargin:10
                 spacing:20
-                //width:episodeInfoBox.width
                 Rectangle {
                     width:64
                     height:24
@@ -373,6 +396,7 @@ QC25.Popup {
             height:hiddenSummary.height*1.25
             radius:12
             opacity:.65
+            antialiasing:true
 
             Text {
                 id:summary
