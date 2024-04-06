@@ -11,15 +11,19 @@ QC25.Popup {
     height: 900
     modal: true
     focus: true
-    property real backdropOpacity: 1.0
-    property color backdropColor:"black"
+
     //closePolicy: mediaInfoPopup.CloseOnEscape || mediaInfoPopup.CloseOnPressOutsideParent || mediaInfoPopup.CloseOnPressOutside
 
     onClosed: {
-        //summary.visible=true
         mplayer.stop();
-        overlayRect.visible=false;
         mplayer.source="";
+        overlayRect.visible=false;
+        playButton.visible=true;
+        trailerButton.visible=true;
+        summary.visible=true;
+        scrollView.focus=true;
+        listView.focus=true;
+        voutput.opacity=-1;
         Qt.cursorShape=Qt.ArrowCursor;
     }
 
@@ -38,7 +42,7 @@ QC25.Popup {
             from: 0.6;
             to: 1.0;
             easing.type: Easing.OutBack
-            duration: 750
+            duration: 600
         }
     }
 
@@ -53,22 +57,33 @@ QC25.Popup {
     }
 
     background: Rectangle {
-        border.color: "gray"
-        border.width:.5
+        id:backgroundRect
         antialiasing:true
-        color:"black"
+        color:"transparent"
         radius:8
 
         Image{
+            id:backdropImg
             source:(selectedItem=="randomList") ? "backdrops"+randomArray[currentItem].backdrop_path : (selectedItem=="movieList") ? "backdrops"+movieArray[currentItem].backdrop_path : (selectedItem=="tvList") ? "backdrops/"+tvArray[currentItem].backdrop_path : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "backdrops"+searchArray[currentItem].backdrop_path:"-" : "-"
-            anchors.centerIn:parent
-            width:parent.width*.994
-            height:parent.height*.994
+            anchors.fill:parent
+            //width:parent.width*.996
+            //height:parent.height*.996
             fillMode : Image.PreserveAspectCrop
             opacity:1
             smooth:true
-            //antialiasing:true
+            visible:false
         }
+
+        OpacityMask {
+                anchors.fill: backdropImg
+                source: backdropImg
+                maskSource: Rectangle {
+                    width: backdropImg.width
+                    height: backdropImg.height
+                    radius: 8
+                    visible: false // this also needs to be invisible or it will cover up the image
+                }
+            }
 
         Rectangle {
             id:titleBox
@@ -117,10 +132,12 @@ QC25.Popup {
                 hoverEnabled:true
                 cursorShape:  Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton
-                onEntered: playIconOverlay.color="#55aaff"
+                onEntered:playIconOverlay.color="#55aaff"
                 onExited: playIconOverlay.color=Theme.textColor
                 onClicked:{
-                    (selectedItem=="randomList") ? Qt.openUrlExternally(movieDir+randomArray[currentItem].link) : (selectedItem=="movieList") ? Qt.openUrlExternally(movieDir+movieArray[currentItem].link) : (selectedItem=="tvList") ? Qt.openUrlExternally(movieDir+tvArray[currentItem].link) : (selectedItem=="searchList") ?  (searchArray.length > 0) ? Qt.openUrlExternally(movieDir+searchArray[currentItem].link) : Qt.openUrlExternally("https://moviesjoyhd.to/home") :  Qt.openUrlExternally("https://moviesjoy.is/home")
+                    (selectedItem=="randomList") ? Qt.openUrlExternally(movieDir+randomArray[currentItem].link) : (selectedItem=="movieList") ? Qt.openUrlExternally(movieDir+movieArray[currentItem].link) : (selectedItem=="tvList") ? Qt.openUrlExternally(tvDir+tvArray[currentItem].link) : (selectedItem=="searchList") ?  (searchArray.length > 0) ? Qt.openUrlExternally(movieDir+searchArray[currentItem].link) : Qt.openUrlExternally("https://moviesjoyhd.to/home") :  Qt.openUrlExternally("https://moviesjoy.is/home")
+                    tf.text=""
+                    tf.focus=false
                     mediaInfoPopup.close();
                 }
             }
@@ -252,9 +269,13 @@ QC25.Popup {
                 onEntered: trailerButton.border.color="#55aaff"
                 onExited: trailerButton.border.color="gray"
                 onClicked:{
-                    summary.visible=false
+                    summary.visible=false;
                     mplayer.source=(selectedItem=="randomList") ? "/home/data/Movies/Trailers/"+randomArray[currentItem].trailer : (selectedItem=="movieList") ? "/home/data/Movies/Trailers/"+movieArray[currentItem].trailer : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "/home/data/Movies/Trailers/"+searchArray[currentItem].trailer:"-":"-"
+                    playButton.visible=false;
                     overlayRect.visible=true;
+                    trailerButton.visible=false;
+                    voutput.opacity=0;
+                    voutput.opacity=1;
                     mplayer.play();
                 }
             }
@@ -298,12 +319,20 @@ QC25.Popup {
             loops:0
             playbackRate:1
             source:""
-
             onStopped: {
-                overlayRect.visible=false;
-                summary.visible=true
-                mplayer.stop();
-                mplayer.source=""
+                 mplayer.source="";
+                 playButton.visible=true;
+                 trailerButton.visible=true;
+                 summary.visible=true;
+                 overlayRect.visible=false;
+                 voutput.opacity=0;
+            }
+            onPlaying:{
+                 playButton.visible=false;
+                 trailerButton.visible=false;
+                 summary.visible=false;
+                 overlayRect.visible=true;
+                 voutput.opacity=1;
             }
         }
 
@@ -313,6 +342,12 @@ QC25.Popup {
             anchors.fill: parent
             source: mplayer
             smooth:true
+            opacity:0
+            Behavior on opacity {
+                    OpacityAnimator {
+                        duration:1500
+                        easing.type: Easing.InCubic
+                    }}
         }
     }
 }
