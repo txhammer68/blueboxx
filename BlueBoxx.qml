@@ -6,16 +6,20 @@ import org.kde.plasma.components 2.0
 import org.kde.plasma.core 2.1
 import QtGraphicalEffects 1.5
 
+// *********************************************
 // *** blueboxx media manager app
-// *** txhammer
+// *** https://github.com/txhammer68/blueboxx
 // *** 03/2024
 // *** json arrays for movie/tv shows
+// *** tmdb api for media info and art work
+// *********************************************
 
 Image {
     id:root
     anchors.fill:rootMain
     anchors.margins:0
     source:"bk2.png"
+
     property var movieArray:[]
     property var tvArray:[]
     property var randomArray:[]
@@ -24,24 +28,14 @@ Image {
     property int currentItem:0
     property string url1:"movies.json"
     property string url2:"tvList.json"
-    property string selectedMovie:""
-    property string selectedMoviePlaylist:""
-
-    property string movieDir:"/$HOME/Movies/"
-    property string tvDir:"/$HOME/tvSeries/"
-    property string trailerDir:"/$HOME/Movies/Trailers/"
+    property string movieDir:"/home/data/Movies/"
+    property string tvDir:"/home/data/Movies/Reel2/tvSeries/"
+    property string trailerDir:"/home/data/Movies/Trailers"
 
 
-     FontLoader {
+    FontLoader {
         id: appFontStyle
         source: "KomikaTitle.ttf"
-    }
-
-
-    Component.onCompleted: {
-        scripts.getData(url1);
-        scripts.getData(url2);
-        init.start();
     }
 
     Scripts {id:scripts}
@@ -51,21 +45,6 @@ Image {
     Info { id: mediaInfoPopup}
 
     TV {id:tvSeriesPopup}
-
-
-    Timer {
-        id:init
-        running:false
-        repeat:false
-        interval:200
-        onTriggered:{
-            //scripts.randomGen(0,movieArray.length);
-            scripts.newMovies()
-            listView.positionViewAtBeginning();
-            listView.anchors.leftMargin=500;
-        }
-    }
-
 
     QC25.TextField {
         id:tf
@@ -80,8 +59,10 @@ Image {
         height:36
         visible:selectedItem=="movieList" || selectedItem=="searchList"
         onAccepted: {
-            scripts.searchMovies (tf.text)
-        }
+            selectedItem="searchList";
+            scripts.searchMovies (tf.text);
+            scripts.selectedViewChanged ();
+           }
         focus:false
         placeholderTextColor:"gray"
 
@@ -114,6 +95,7 @@ Image {
                 }
             }
         }
+    }
 
         Text {
             anchors.top:tf.bottom
@@ -137,18 +119,8 @@ Image {
                 onExited:{
                     parent.color="white"
                 }
-                onClicked:searchPopup.open()
-            }
-        }
-
-        Timer {
-            id:tfTimer
-            running:tf.focus
-            repeat:false
-            interval:10000
-            onTriggered:{
-                tf.text=""
-                tf.focus=false
+                onClicked:{
+                    searchPopup.open()
             }
         }
     }
@@ -170,7 +142,6 @@ Image {
                 anchors.top:parent.top
                 anchors.topMargin:4
                 anchors.horizontalCenter:parent.horizontalCenter
-                //antialiasing:true
                 smooth:true
                 cache:true
                 asynchronous : false
@@ -179,19 +150,18 @@ Image {
                     anchors.top:parent.bottom
                     anchors.left:parent.left
                     anchors.topMargin:10
-                    anchors.leftMargin:5
+                    anchors.leftMargin:0
                     text:(selectedItem=="randomList") ? randomArray[index].title : (selectedItem=="movieList") ? movieArray[index].title : (selectedItem=="tvList") ? tvArray[index].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[index].title:"No Results" : "No Results"
                     color:"white"
                     antialiasing:true
                     font.pointSize:11
-                    width:165
+                    width:parent.width*.95
                     elide: Text.ElideRight
                     wrapMode: Text.NoWrap
                 }
             }
 
             MouseArea {
-                //id:ma
                 anchors.fill: parent
                 hoverEnabled:true
                 cursorShape:  Qt.PointingHandCursor
@@ -254,6 +224,7 @@ Image {
             Rectangle {
                 width:156;height:36;
                 color:"transparent"
+                border.width:.5
                 border.color:(selectedItem=="randomList") ? "#55aaff":"gray"
                 radius:8
                 antialiasing:true
@@ -263,8 +234,7 @@ Image {
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
-                    anchors.horizontalCenter:parent.horizontalCenter
-                    anchors.verticalCenter:parent.verticalCenter
+                    anchors.centerIn:parent
                     antialiasing:true
                 }
 
@@ -276,17 +246,8 @@ Image {
                     onExited:parent.border.color="gray"
                     hoverEnabled:true
                     onClicked: {
-                        randomArray=[]
-                        scripts.randomGen(0,movieArray.length);
-                        searchArray=[]
-                        tf.focus=false
-                        tf.text=""
-                        listView.focus=true
                         selectedItem="randomList"
-                        listView.anchors.leftMargin=500;
-                        listView.model=randomArray.length;
-                        listView.delegate=null;
-                        listView.delegate=movieView;
+                        scripts.selectedViewChanged ();
                     }
                 }
             }
@@ -295,6 +256,7 @@ Image {
                 width:156;height:36;
                 color:"transparent"
                 border.color:(selectedItem=="movieList") ? "#55aaff":"gray"
+                border.width:.5
                 radius:8
                 antialiasing:true
 
@@ -302,8 +264,7 @@ Image {
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
-                    anchors.horizontalCenter:parent.horizontalCenter
-                    anchors.verticalCenter:parent.verticalCenter
+                    anchors.centerIn:parent
                     antialiasing:true
                 }
 
@@ -316,16 +277,7 @@ Image {
                     hoverEnabled:true
                     onClicked: {
                         selectedItem="movieList"
-                        randomArray=[]
-                        searchArray=[]
-                        tf.focus=false
-                        tf.text=""
-                        listView.focus=true
-                        listView.anchors.leftMargin=60;
-                        listView.positionViewAtBeginning();
-                        listView.model=movieArray.length;
-                        listView.delegate=null;
-                        listView.delegate=movieView;
+                        scripts.selectedViewChanged ();
                     }
                 }
             }
@@ -334,15 +286,16 @@ Image {
                 width:156;height:36;
                 color:"transparent"
                 border.color:(selectedItem=="tvList") ? "#55aaff":"gray"
+                border.width:.5
                 radius:8
                 antialiasing:true
 
-                Text {text:"TV Series"
+                Text {
+                    text:"TV Series"
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
-                    anchors.horizontalCenter:parent.horizontalCenter
-                    anchors.verticalCenter:parent.verticalCenter
+                    anchors.centerIn:parent
                     antialiasing:true
                 }
 
@@ -354,16 +307,8 @@ Image {
                     onExited:parent.border.color="gray"
                     hoverEnabled:true
                     onClicked: {
-                        randomArray=[]
-                        searchArray=[]
                         selectedItem="tvList"
-                        tf.focus=false
-                        listView.focus=true
-                        tf.text=""
-                        listView.anchors.leftMargin=60;
-                        listView.model=tvArray.length;
-                        listView.delegate=null;
-                        listView.delegate=movieView;
+                        scripts.selectedViewChanged ();
                     }
                 }
             }
@@ -379,19 +324,6 @@ Image {
             color:"gray"
             antialiasing:true
         }
-    }
-
-    function selectedView () {
-
-        if (selectedItem == "randomList")
-            return randomArray.length
-            else if (selectedItem == "movieList")
-                return movieArray.length
-                else if (selectedItem == "searchList")
-                    return searchArray.length
-                    else if (selectedItem == "tvList")
-                        return tvArray.length
-                        else return 1
     }
 
     QC15.ScrollView {
@@ -410,48 +342,63 @@ Image {
         height:root.height
         enabled : hovered || pressed
         __wheelAreaScrollSpeed: 310 /// set scroll page height pixels
+        //Keys.onUpPressed: listView.flick(0, 310)
+        //Keys.onDownPressed: listView.flick(0, -310)
 
         Component.onCompleted: {
+            //flickableItem.contentY = flickableItem.contentHeight / 2
             focus=true
         }
 
         GridView {
             id:listView
             focus:true
-            visible:false
+            visible:true
+            //anchors.centerIn:parent
             anchors.top:parent.top
             anchors.bottom:parent.bottom
             anchors.left:parent.left
             anchors.right:parent.right
+            //anchors.horizontalCenter: parent.horizontalCenter
+            //width: model.count*cellWidth //Math.min(model.count, Math.floor(parent.width/cellWidth))*cellWidth
             width:parent.width
             height:parent.height
-            model:selectedView ()
+            model:1
             boundsBehavior: Flickable.StopAtBounds
             cacheBuffer:256//310*27
             //reuseItems :true
             //highlight:highlightView
             //highlightFollowsCurrentItem:true
             clip:false
-            interactive:true
+            interactive:false
             snapMode :GridView.SnapOneRow
             keyNavigationEnabled: true
+            keyNavigationWraps : false
             //keyNavigationWraps : true
             Keys.onPressed:{
                 if(event.key === Qt.Key_PageUp){
-                listView.flick(0, contentY-=310)
-                    }
+                    if (!atYBeginning) {
+                    listView.flick(0, contentY-=620);}
+                }
                 else if(event.key === Qt.Key_PageDown){
-                listView.flick(0, contentY+=310)
+                    if (!atYEnd) {
+                       listView.flick(0, contentY+=620)
                     }
+                }
                 else if(event.key === Qt.Key_Home){
-                listView.positionViewAtBeginning()
-                    }
+                    listView.positionViewAtBeginning()
+                }
                 else if(event.key === Qt.Key_End){
-                listView.positionViewAtEnd()
-                    }
+                    listView.positionViewAtEnd()
+                }
             }
+            //Keys.onUpPressed: listView.incrementCurrentIndex()
+            //Keys.onDownPressed: listView.decrementCurrentIndex()
+            //Keys.onUpPressed:listview.positionViewAtIndex(currentIndex+1, GridView.Contain)
+            //Keys.onDownPressed: listview.positionViewAtIndex(currentIndex-1, GridView.Contain)
             Keys.onUpPressed: listView.flick(0, contentY-=310)
             Keys.onDownPressed: listView.flick(0, contentY+=310)
+            //keyNavigationWraps: false // endless scrolling
             delegate:null
             cellWidth: 200; cellHeight: 310
             onDelegateChanged:{
@@ -462,18 +409,21 @@ Image {
                         duration: units.longDuration
                         easing.type: Easing.InCubic
                     }}
-            Component.onCompleted: {
-                  listView.visible=true;
-                  //listView.positionViewAtIndex(1)
-                  //listView.incrementCurrentIndex()
-                }
+                    Component.onCompleted: {
+                         listView.visible=true;
+                         //listView.positionViewAtBeginning()
+                         //listView.positionViewAtEnd()
+                         //listView.positionViewAtBeginning()
+                        //listView.positionViewAtIndex(1)
+                        //listView.incrementCurrentIndex()
+                    }
 
-            Behavior on contentY{
-            NumberAnimation {
-                duration: 1000
-                easing.type: Easing.OutQuad
-            }
-        }
+                    Behavior on contentY{
+                        NumberAnimation {
+                            duration: 1000
+                            easing.type: Easing.OutQuad
+                        }
+                    }
         }
     }
 }
