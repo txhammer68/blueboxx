@@ -20,12 +20,13 @@ QC25.Popup {
     property var yearList:["1950","1960","1970","1980","1990","2000","2010","2020"]
 
     onClosed: {
-        childGroup.checkState=0
-        childGroup2.checkState=0
-        searchTerms=''
-        tempString=''
-        searchYear=''
-        Qt.cursorShape=Qt.ArrowCursor
+        childGroup.checkState=0;
+        childGroup2.checkState=0;
+        searchTerms='';
+        tempString='';
+        searchYear='';
+        Qt.cursorShape=Qt.ArrowCursor;
+        scrollView.focus=true
     }
 
     QC25.Overlay.modal: GaussianBlur {
@@ -141,14 +142,10 @@ QC25.Popup {
                             if (checkState === 2) {
                                 tempString=tempString.concat(genreList[index],",")
                                 searchTerms=tempString;
-                                //tempString.push(genreList[index])
-                                //searchTerms=tempString
                             }
                             if (checkState === 0) {
                                 tempString=tempString.replace(genreList[index],"")
                                 searchTerms=tempString;
-                                //tempString.pop(genreList[index])
-                                //searchTerms=tempString
                             }
                         }
                     }
@@ -183,14 +180,10 @@ QC25.Popup {
                         if (checkState === 2) {
                             tempString=tempString.concat(genreList[index+10],",")
                             searchTerms=tempString;
-                            //tempString.push(genreList[index+10])
-                            //searchTerms=tempString
                         }
                         if (checkState === 0) {
                             tempString=tempString.replace(genreList[index+10],"")
                             searchTerms=tempString;
-                            //tempString.pop(genreList[index+10])
-                            //searchTerms=tempString
                         }
                     }
                 }
@@ -229,8 +222,12 @@ QC25.Popup {
                     onEntered:parent.border.color="#55aaff"
                     onExited:parent.border.color="gray"
                     onClicked: {
-                        searchPopup.close()
-                        scripts.genreSearch (searchTerms)
+                        tf.text=""
+                        tf.focus=false
+                        searchPopup.close();
+                        selectedItem="searchList"
+                        scripts.genreSearch (searchTerms);
+                        scripts.selectedViewChanged ();
                     }
                 }
             }
@@ -260,9 +257,9 @@ QC25.Popup {
                     onEntered:parent.border.color="#55aaff"
                     onExited:parent.border.color="gray"
                     onClicked:{
-                        childGroup.checkState=0
-                        tempString=''
-                        searchTerms=''
+                        childGroup.checkState=0;
+                        tempString='';
+                        searchTerms='';
                     }
                 }
             }
@@ -323,11 +320,9 @@ QC25.Popup {
                     onCheckedChanged:{
                         if (checkState === 2) {
                             searchYear=yearList[index]
-                            //searchYear=tempYear
                         }
                         if (checkState === 0) {
                             tempYear=''
-                            //searchYear=tempYear
                         }
                     }
                 }
@@ -366,8 +361,11 @@ QC25.Popup {
                     onEntered:parent.border.color="#55aaff"
                     onExited:parent.border.color="gray"
                     onClicked:{
-                        scripts.yearSearch (searchYear);
+                        tf.text=""
+                        tf.focus=false
                         searchPopup.close();
+                        scripts.yearSearch (searchYear);
+                        scripts.selectedViewChanged ();
                     }
                 }
             }
@@ -396,8 +394,8 @@ QC25.Popup {
                     onExited:parent.border.color="gray"
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                     onClicked:{
-                        childGroup2.checkState=0
-                        searchYear=''
+                        childGroup2.checkState=0;
+                        searchYear='';
                     }
                 }
             }
