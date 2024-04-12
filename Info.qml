@@ -64,7 +64,7 @@ QC25.Popup {
 
         Image{
             id:backdropImg
-            source:(selectedItem=="randomList") ? "backdrops"+randomArray[currentItem].backdrop_path : (selectedItem=="movieList") ? "backdrops"+movieArray[currentItem].backdrop_path : (selectedItem=="tvList") ? "backdrops/"+tvArray[currentItem].backdrop_path : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "backdrops"+searchArray[currentItem].backdrop_path:"-" : "-"
+            source:(selectedItem=="randomList") ? "backdrops"+randomArray[currentItem].backdrop_path : (selectedItem=="movieList") ? "backdrops"+movieArray[currentItem].backdrop_path : (selectedItem=="tvList") ? "backdrops"+tvArray[currentItem].backdrop_path : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "backdrops"+searchArray[currentItem].backdrop_path:"-" : "-"
             anchors.fill:parent
             //width:parent.width*.996
             //height:parent.height*.996
@@ -135,7 +135,7 @@ QC25.Popup {
                 onEntered:playIconOverlay.color="#55aaff"
                 onExited: playIconOverlay.color=Theme.textColor
                 onClicked:{
-                    (selectedItem=="randomList") ? Qt.openUrlExternally(movieDir+randomArray[currentItem].link) : (selectedItem=="movieList") ? Qt.openUrlExternally(movieDir+movieArray[currentItem].link) : (selectedItem=="tvList") ? Qt.openUrlExternally(tvDir+tvArray[currentItem].link) : (selectedItem=="searchList") ?  (searchArray.length > 0) ? Qt.openUrlExternally(movieDir+searchArray[currentItem].link) : Qt.openUrlExternally("https://moviesjoyhd.to/home") :  Qt.openUrlExternally("https://moviesjoy.is/home")
+                    (selectedItem=="randomList") ? Qt.openUrlExternally(movieDir+randomArray[currentItem].link) : (selectedItem=="movieList") ? Qt.openUrlExternally(movieDir+movieArray[currentItem].link) : (selectedItem=="tvList") ? Qt.openUrlExternally(tvDir+tvArray[currentItem].link) : (selectedItem=="searchList") ?  (searchArray.length > 0) ?  Qt.openUrlExternally(movieDir+searchArray[currentItem].link) ? Qt.openUrlExternally(movieDir+searchArray[currentItem].link) : Qt.openUrlExternally("https://www.imdb.com/") :  Qt.openUrlExternally("https://www.imdb.com/") :  Qt.openUrlExternally("https://www.imdb.com/")
                     tf.text=""
                     tf.focus=false
                     mediaInfoPopup.close();
@@ -174,7 +174,7 @@ QC25.Popup {
             anchors.bottomMargin:70
             color:"black"
             width:parent.width*.95
-            height:hiddenSummary.height*1.25
+            height:hiddenSummary.height*1.20
             radius:12
             opacity:.65
         }
@@ -270,7 +270,7 @@ QC25.Popup {
                 onExited: trailerButton.border.color="gray"
                 onClicked:{
                     summary.visible=false;
-                    mplayer.source=(selectedItem=="randomList") ? "/home/data/Movies/Trailers/"+randomArray[currentItem].trailer : (selectedItem=="movieList") ? "/home/data/Movies/Trailers/"+movieArray[currentItem].trailer : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "/home/data/Movies/Trailers/"+searchArray[currentItem].trailer:"-":"-"
+                    mplayer.source=(selectedItem=="randomList") ? trailerDir+randomArray[currentItem].trailer : (selectedItem=="movieList") ? trailerDir+movieArray[currentItem].trailer : (selectedItem=="searchList") ?  (searchArray.length > 0) ? trailerDir+searchArray[currentItem].trailer:"-":"-"
                     playButton.visible=false;
                     overlayRect.visible=true;
                     trailerButton.visible=false;
@@ -326,6 +326,8 @@ QC25.Popup {
                  summary.visible=true;
                  overlayRect.visible=false;
                  voutput.opacity=0;
+                 voutput.focus=false
+                 parent.focus=true
             }
             onPlaying:{
                  playButton.visible=false;
@@ -333,6 +335,8 @@ QC25.Popup {
                  summary.visible=false;
                  overlayRect.visible=true;
                  voutput.opacity=1;
+                 voutput.focus=true
+                 parent.focus=false
             }
         }
 
@@ -348,6 +352,7 @@ QC25.Popup {
                         duration:1500
                         easing.type: Easing.InCubic
                     }}
+             Keys.onSpacePressed: mplayer.stop();
         }
     }
 }
