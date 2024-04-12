@@ -30,7 +30,7 @@ Image {
     property string url2:"tvList.json"
     property string movieDir:"/home/data/Movies/"
     property string tvDir:"/home/data/Movies/Reel2/tvSeries/"
-    property string trailerDir:"/home/data/Movies/Trailers"
+    property string trailerDir:"/home/data/Movies/Trailers/"
 
 
     FontLoader {
