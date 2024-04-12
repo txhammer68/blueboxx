@@ -13,13 +13,13 @@
 * getTVSeriesInfo.py
     * downloads tv show info seasons, episodes, art work, creates tvList.json
 ### Trailers
-https://api.themoviedb.org/3/movie/11548/videos?api_key=fde5ddeba3c7dec3jc1f51852ca0fb95
-get youtube key and use yt-dlp to download a matching trailer key for show
-yt-dlp --format=mp4 -o "Dune: Part Two - Trailer.mp4" "https://www.youtube.com/watch?v="+trailerKey
+* https://api.themoviedb.org/3/movie/11548/videos?api_key=fde5ddeba3c7dec3jc1f51852ca0fb95
+* get youtube key and use yt-dlp to download a matching trailer key for show
+* yt-dlp --format=mp4 -o "Dune: Part Two - Trailer.mp4" "https://www.youtube.com/watch?v="+trailerKey
 
-For example:
-Youtube: https://www.youtube.com/watch?v=ASWO43n3QkQ
-Vimeo: https://vimeo.com/282875052
+* For example:
+* Youtube: https://www.youtube.com/watch?v=ASWO43n3QkQ
+* Vimeo: https://vimeo.com/282875052
 
 ### TMDB Notes
 Movie Data json structure <br>
