@@ -1,6 +1,7 @@
 ### TMDB API Info
 
 ### Download movie data
+1. Edit tmdb.py change movie and tv list id's to yours
 1. tmdb.py will download master movie/tv list from tmdb api to tmdb.json, tv.json
 2. movieInfo will parse tmdb.json remove unecessary keys, add genres, trailer info and media link info and save to movies.json
 
