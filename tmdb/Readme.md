@@ -2,13 +2,12 @@
 
 ### Download movie data
 1. Edit tmdb.py change movie and tv list id's to yours
-1. tmdb.py will download master movie/tv list from tmdb api to tmdb.json, tv.json
-2. movieInfo will parse tmdb.json remove unecessary keys, add genres, trailer info and media link info and save to movies.json
-
-* getMovieInfo.py will display json for particiluar movie id to add later to movies.json, manual process
-* posters.py will download all art work for shows
-* trailers.py will find links to trailers for all shows, paste results into trailers.txt
-* trailers.sh and trailers.txt will download all trailers using yt-dlp
+2. tmdb.py will download master movie/tv list from tmdb api to tmdb.json, tv.json
+3. movieInfo will parse tmdb.json remove unecessary keys, add genres, trailer info and media link info and save to movies.json
+4. getMovieInfo.py will display json for particiluar movie id to add later to movies.json, manual process
+5. posters.py will download all art work for shows
+6. trailers.py will find links to trailers for all shows, paste results into trailers.txt
+7. trailers.sh and trailers.txt will download all trailers using yt-dlp
 
 ### Get TV Series Data
 * getTVSeriesInfo.py
