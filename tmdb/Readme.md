@@ -54,10 +54,10 @@ https://api.themoviedb.org/3/tv/1425?language=en-US&api_key= <br>
     - link to media (Series Title/Series Title-S-1-EP-2.mp4)
 ```
 
-backdrop_path	"/b7HsWYjyrVkDPkAFFAGZ76iainK.jpg"
-    wget https://image.tmdb.org/t/p/w1280/+backdrop_path
+* backdrop_path	"/b7HsWYjyrVkDPkAFFAGZ76iainK.jpg"
+* wget https://image.tmdb.org/t/p/w1280/+backdrop_path
 
-poster_path
-    wget https://image.tmdb.org/t/p/w500/+poster_path
+* poster_path
+* wget https://image.tmdb.org/t/p/w500/+poster_path
 
 
