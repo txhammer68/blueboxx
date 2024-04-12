@@ -3,7 +3,7 @@ from datetime import datetime
 
 ### Create new json array select keys from TMDB info ***************************
 
-url = "movies.json"
+url = "tmdb.json"
 
 movieArray=[]
 data={}
@@ -69,6 +69,6 @@ for y in range(len(data)):
   genre=''
   movieData={}
 
-f = open("movieList.json", "w+")
+f = open("movies.json", "w+")
 print(json.dumps(movieArray,indent=2),end="",file=f)
 f.close()
