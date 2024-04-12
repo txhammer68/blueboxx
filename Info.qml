@@ -64,7 +64,7 @@ QC25.Popup {
 
         Image{
             id:backdropImg
-            source:(selectedItem=="randomList") ? "backdrops"+randomArray[currentItem].backdrop_path : (selectedItem=="movieList") ? "backdrops"+movieArray[currentItem].backdrop_path : (selectedItem=="tvList") ? "backdrops"+tvArray[currentItem].backdrop_path : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "backdrops"+searchArray[currentItem].backdrop_path:"-" : "-"
+            source:(selectedItem=="randomList") ? "backdrops"+randomArray[currentItem].backdrop_path : (selectedItem=="movieList") ? "backdrops"+movieArray[currentItem].backdrop_path : (selectedItem=="tvList") ? "backdrops"+tvArray[currentItem].backdrop_path : (selectedItem=="searchList") ?  (searchArray.length > 0) ? "backdrops"+searchArray[currentItem].backdrop_path:"bk2.png" : "bk2.png"
             anchors.fill:parent
             //width:parent.width*.996
             //height:parent.height*.996
@@ -101,7 +101,7 @@ QC25.Popup {
         Text {
             id:titleHeaderHidden
             anchors.centerIn:titleBox
-            text:(selectedItem=="randomList") ? randomArray[currentItem].title : (selectedItem=="movieList") ? movieArray[currentItem].title : (selectedItem=="tvList") ? tvArray[currentItem].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[currentItem].title:"-" : "-"
+            text:(selectedItem=="randomList") ? randomArray[currentItem].title : (selectedItem=="movieList") ? movieArray[currentItem].title : (selectedItem=="tvList") ? tvArray[currentItem].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[currentItem].title:"No Results" : "Nada"
             color:"white"
             visible:false
             antialiasing:true
@@ -111,7 +111,7 @@ QC25.Popup {
         Text {
             id:titleHeader
             anchors.centerIn:titleBox
-            text:(selectedItem=="randomList") ? randomArray[currentItem].title : (selectedItem=="movieList") ? movieArray[currentItem].title : (selectedItem=="tvList") ? tvArray[currentItem].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[currentItem].title:"-" : "-"
+            text:(selectedItem=="randomList") ? randomArray[currentItem].title : (selectedItem=="movieList") ? movieArray[currentItem].title : (selectedItem=="tvList") ? tvArray[currentItem].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[currentItem].title:"No Results" : "Nada"
             color:"white"
             opacity:1
             antialiasing:true
