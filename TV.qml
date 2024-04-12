@@ -13,11 +13,13 @@ QC25.Popup {
     //closePolicy: mediaInfoPopup.CloseOnEscape || mediaInfoPopup.CloseOnPressOutsideParent || mediaInfoPopup.CloseOnPressOutside
 
     property int selSeason:-1
+    property int selEpisode:-1
 
     onClosed: {
         Qt.cursorShape=Qt.ArrowCursor;
         childGroup.checkState=0;
         selSeason=-1;
+        selEpisode=-1;
         episodeTitle.text="";
         episodeInfo.text="";
         episodeRunTime.text="";
@@ -222,6 +224,7 @@ QC25.Popup {
                             episodeInfo.text= tvArray[currentItem].seasons[selSeason].episodes[index].overview
                             episodeRunTime.text="⏳ "+tvArray[currentItem].seasons[selSeason].episodes[index].runtime
                             episodeAirDate.text="🗓️  "+Qt.formatDate(new Date(tvArray[currentItem].seasons[selSeason].episodes[index].airdate),"M/yyyy")
+                            selEpisode=index;
                         }
                     }
                 }
@@ -294,7 +297,7 @@ QC25.Popup {
                         playButton.visible=false
                         playIconOverlay.visible=false
                     }
-                    onClicked:Qt.openUrlExternally( tvDir+tvArray[currentItem].seasons[selSeason].episodes[index].link)
+                    Qt.openUrlExternally(tvDir+tvArray[currentItem].name+"/"+tvArray[currentItem].seasons[selSeason].episodes[selEpisode].link)
                 }
                 onTextChanged:{
                         opacity=0;
