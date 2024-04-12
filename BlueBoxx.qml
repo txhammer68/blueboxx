@@ -222,10 +222,11 @@ Image {
             spacing:60
 
             Rectangle {
+                id:r1
                 width:156;height:36;
                 color:"transparent"
                 border.width:.5
-                border.color:(selectedItem=="randomList") ? "#55aaff":"gray"
+                border.color:(selectedItem=="randomList" || ma1.containsMouse) ? "#55aaff" : "gray"
                 radius:8
                 antialiasing:true
 
@@ -239,23 +240,25 @@ Image {
                 }
 
                 MouseArea {
+                    id:ma1
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color="#55aaff"
-                    onExited:parent.border.color="gray"
-                    hoverEnabled:true
+                    //onEntered:borderColor ();
+                    //onExited: borderColor ();
+                    hoverEnabled:true;
                     onClicked: {
-                        selectedItem="randomList"
+                        selectedItem="randomList";
                         scripts.selectedViewChanged ();
                     }
                 }
             }
 
             Rectangle {
+                id:r2
                 width:156;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="movieList") ? "#55aaff":"gray"
+                border.color:(selectedItem=="movieList" || ma2.containsMouse) ? "#55aaff" : "gray"
                 border.width:.5
                 radius:8
                 antialiasing:true
@@ -269,23 +272,25 @@ Image {
                 }
 
                 MouseArea {
+                    id:ma2
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color="#55aaff"
-                    onExited:parent.border.color="gray"
+                    //onEntered:borderColor ()
+                    //onExited:borderColor ()
                     hoverEnabled:true
                     onClicked: {
-                        selectedItem="movieList"
+                        selectedItem="movieList";
                         scripts.selectedViewChanged ();
                     }
                 }
             }
 
             Rectangle {
+                id:r3
                 width:156;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="tvList") ? "#55aaff":"gray"
+                border.color:(selectedItem=="tvList" || ma3.containsMouse) ? "#55aaff" : "gray"
                 border.width:.5
                 radius:8
                 antialiasing:true
@@ -300,14 +305,15 @@ Image {
                 }
 
                 MouseArea {
+                    id:ma3
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color="#55aaff"
-                    onExited:parent.border.color="gray"
+                    //onEntered:borderColor ()
+                    //onExited:borderColor ()
                     hoverEnabled:true
                     onClicked: {
-                        selectedItem="tvList"
+                        selectedItem="tvList";
                         scripts.selectedViewChanged ();
                     }
                 }
