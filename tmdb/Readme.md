@@ -22,8 +22,8 @@
 * Vimeo: https://vimeo.com/282875052
 
 ### TMDB Notes
-Movie Data json structure <br>
-https://api.themoviedb.org/3/movie/209403?api_key= <br>
+* Movie Data json structure <br>
+* https://api.themoviedb.org/3/movie/209403?api_key= <br>
 
 ```
 - title
@@ -36,8 +36,8 @@ https://api.themoviedb.org/3/movie/209403?api_key= <br>
 - poster_path
 - link to media (Predifned link to video is media title.mp4)
 ```
-TV Series data json structure <br>
-https://api.themoviedb.org/3/tv/1425?language=en-US&api_key= <br>
+* TV Series data json structure <br>
+* https://api.themoviedb.org/3/tv/1425?language=en-US&api_key= <br>
 
 ```
 - name
