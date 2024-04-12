@@ -364,6 +364,7 @@ QC25.Popup {
                         tf.text=""
                         tf.focus=false
                         searchPopup.close();
+                        selectedItem="searchList"
                         scripts.yearSearch (searchYear);
                         scripts.selectedViewChanged ();
                     }
