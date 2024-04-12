@@ -48,7 +48,8 @@ Image {
 
     QC25.TextField {
         id:tf
-        placeholderText:"Movie Search...\t "+"                   ("+movieArray.length+")".replace(" ",'&#32')
+        property int movieCount:searchArray.length > 0 ? searchArray.length : movieArray.length
+        placeholderText:"Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
         anchors.top:root.top
         anchors.rightMargin:80
         anchors.topMargin:50
