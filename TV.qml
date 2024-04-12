@@ -64,7 +64,7 @@ QC25.Popup {
 
         Image{
             id:tvBackdropImg
-            source:"backdrops/"+tvArray[currentItem].backdrop_path
+            source:"backdrops"+tvArray[currentItem].backdrop_path
             anchors.centerIn:parent
             width:parent.width
             height:parent.height
