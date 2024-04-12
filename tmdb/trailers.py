@@ -31,12 +31,8 @@ for y in range(len(data)):
     for z in range(len(response['results'])):
           if (response['results'][z]['type'] == 'Trailer') :
              youTubeKey=str(response['results'][z]['key'])
-             if y == 300 :
+             if y % 20 == 0 :
                 time.sleep(5)
-             if y == 600 :
-               time.sleep(5)
-             if y == 900 :
-               time.sleep(5)
              # youTubeLink.append('https://www.youtube.com/watch?v='+str(youTubeKey)
              print('https://www.youtube.com/watch?v='+str(youTubeKey))
              z=(len(response['results'])+1)
