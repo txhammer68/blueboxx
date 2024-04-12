@@ -2,8 +2,7 @@
 
 ### Get movie data
 1. tmdb.py will download master movie list from tmdb api to tmdb.json
-2. movieInfo will parse tmsb.json remove unecessary keys, add genres, trailer info and media link info and save to movies.json
-### First two have been done should not be run again unless list is lost, deleted or currupted
+2. movieInfo will parse tmdb.json remove unecessary keys, add genres, trailer info and media link info and save to movies.json
 
 * addmovieInfo.py will add new movie to movies.json
     downloads movie art work, trailer, movie info,and inserts data into movies.json
