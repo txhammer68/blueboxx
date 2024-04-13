@@ -3,11 +3,14 @@ import QtQuick.Layouts 1.5
 import QtQuick.Controls 2.5
 import org.kde.plasma.core 2.1
 
-// media manager app v2.2
-// txhammer
-// 03/2024
-// added popup window for media info and search options, various performance fixes
-// *********************************************************************************************************
+// *********************************************
+// *** blueboxx media manager app
+// *** https://github.com/txhammer68/blueboxx
+// *** 03/2024
+// *** json arrays for movie/tv shows
+// *** tmdb api for media info and art work
+// *********************************************
+
 
 ApplicationWindow {
    id:rootMain
