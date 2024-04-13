@@ -6,18 +6,10 @@ import org.kde.plasma.components 2.0
 import org.kde.plasma.core 2.1
 import QtGraphicalEffects 1.5
 
-// *********************************************
-// *** blueboxx media manager app
-// *** https://github.com/txhammer68/blueboxx
-// *** 03/2024
-// *** json arrays for movie/tv shows
-// *** tmdb api for media info and art work
-// *********************************************
 
 Image {
     id:root
     anchors.fill:rootMain
-    anchors.margins:0
     source:"bk2.png"
 
     property var movieArray:[]
@@ -26,12 +18,11 @@ Image {
     property var searchArray:[]
     property string selectedItem:"randomList"
     property int currentItem:0
-    property string url1:"movies.json"
-    property string url2:"tvList.json"
-    property string movieDir:"/home/data/Movies/"
-    property string tvDir:"/home/data/Movies/Reel2/tvSeries/"
-    property string trailerDir:"/home/data/Movies/Trailers/"
-
+    readonly property string url1:"movies.json"
+    readonly property string url2:"tvList.json"
+    readonly property string movieDir:"/home/data/Movies/"
+    readonly property string tvDir:"/home/data/Movies/Reel2/tvSeries/"
+    readonly property string trailerDir:"/home/data/Movies/Trailers/"
 
     FontLoader {
         id: appFontStyle
@@ -51,14 +42,14 @@ Image {
         property int movieCount:searchArray.length > 0 ? searchArray.length : movieArray.length
         placeholderText:"Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
         anchors.top:root.top
+        anchors.right:root.right
         anchors.rightMargin:80
         anchors.topMargin:50
-        anchors.right:root.right
-        antialiasing:true
-        opacity: .75
         width:280
         height:36
         visible:selectedItem=="movieList" || selectedItem=="searchList"
+        antialiasing:true
+        opacity:.75
         onAccepted: {
             selectedItem="searchList";
             scripts.searchMovies (tf.text);
@@ -68,12 +59,12 @@ Image {
         placeholderTextColor:"gray"
 
         background: Rectangle {
-            radius: 8
-            border.color: parent.focus ? "#55aaff":"gray"
-            border.width: 1
             width:parent.width
             height:parent.height
             color: "black"
+            radius: 8
+            border.color: parent.focus ? "#55aaff":"gray"
+            border.width: 1
             antialiasing:true
 
             IconItem {
@@ -92,7 +83,10 @@ Image {
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onClicked:tf.text=""
+                    onClicked:{
+                        tf.text="";
+                        tf.focus=true;
+                    }
                 }
             }
         }
@@ -100,31 +94,24 @@ Image {
 
         Text {
             anchors.top:tf.bottom
-            anchors.left:tf.right
+            anchors.right:tf.right
             anchors.topMargin:10
-            anchors.leftMargin:-135
             text:"Advanced Search"
             color:"white"
-            visible:selectedItem=="movieList" || selectedItem=="searchList"
             font.pointSize:12
             antialiasing:true
+            visible:selectedItem=="movieList" || selectedItem=="searchList"
 
             MouseArea {
                 anchors.fill: parent
                 cursorShape:  Qt.PointingHandCursor
                 hoverEnabled:true
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                onEntered:{
-                    parent.color="#55aaff"
-                }
-                onExited:{
-                    parent.color="white"
-                }
-                onClicked:{
-                    searchPopup.open()
-            }
-        }
-    }
+                onEntered:parent.color="#55aaff"
+                onExited:parent.color="white"
+                onClicked: searchPopup.open()
+          }
+      }
 
     Component {
         id:movieView
@@ -145,7 +132,7 @@ Image {
                 anchors.horizontalCenter:parent.horizontalCenter
                 smooth:true
                 cache:true
-                asynchronous : false
+                asynchronous:false
 
                 Text {
                     anchors.top:parent.bottom
@@ -189,10 +176,10 @@ Image {
         id:logoBox
         anchors.top:root.top
         anchors.left:root.left
+        anchors.margins:20
         width:124
         height:84
         radius:12
-        anchors.margins:20
         color:"gray"
         border.color:"gray"
         border.width:.5
@@ -203,18 +190,19 @@ Image {
     Text {
         anchors.centerIn:logoBox
         text:"BlueBoxx"
-        color:"#55aaff";
-        font.pointSize:20;font.family:"Komika Title";
+        color:"#55aaff"
+        font.pointSize:20
+        font.family:"Komika Title"
         antialiasing:true
     }
 
     Item {
         id:headerView
-        height:85
-        width:parent.width/2
         anchors.top:root.top
         anchors.topMargin:36
         anchors.horizontalCenter:parent.horizontalCenter
+        height:85
+        width:parent.width/2
 
         Row {
             anchors.horizontalCenter:parent.horizontalCenter
@@ -232,11 +220,12 @@ Image {
                 antialiasing:true
 
 
-                Text {text:"Now Showing"
+                Text {
+                    anchors.centerIn:parent
+                    text:"Now Showing"
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
-                    anchors.centerIn:parent
                     antialiasing:true
                 }
 
@@ -297,11 +286,11 @@ Image {
                 antialiasing:true
 
                 Text {
+                    anchors.centerIn:parent
                     text:"TV Series"
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
-                    anchors.centerIn:parent
                     antialiasing:true
                 }
 
@@ -326,7 +315,7 @@ Image {
             anchors.top:parent.bottom
             anchors.topMargin:15
             anchors.horizontalCenter:parent.horizontalCenter
-            width:root.width/1.03
+            width:root.width*.96
             height:.5
             color:"gray"
             antialiasing:true
@@ -342,46 +331,33 @@ Image {
         anchors.topMargin:30
         anchors.leftMargin:5
         anchors.rightMargin:5
-        anchors.bottomMargin:0
-        clip:false
-        focus:true
+        anchors.bottomMargin:1
         width:root.width
         height:root.height
+        clip:false
+        focus:true
         enabled : hovered || pressed
-        __wheelAreaScrollSpeed: 310 /// set scroll page height pixels
-        //Keys.onUpPressed: listView.flick(0, 310)
-        //Keys.onDownPressed: listView.flick(0, -310)
+        __wheelAreaScrollSpeed: 310
 
-        Component.onCompleted: {
-            //flickableItem.contentY = flickableItem.contentHeight / 2
-            focus=true
-        }
 
         GridView {
             id:listView
             focus:true
             visible:true
-            //anchors.centerIn:parent
             anchors.top:parent.top
             anchors.bottom:parent.bottom
             anchors.left:parent.left
             anchors.right:parent.right
-            //anchors.horizontalCenter: parent.horizontalCenter
-            //width: model.count*cellWidth //Math.min(model.count, Math.floor(parent.width/cellWidth))*cellWidth
             width:parent.width
             height:parent.height
             model:1
             boundsBehavior: Flickable.StopAtBounds
-            cacheBuffer:256//310*27
-            //reuseItems :true
-            //highlight:highlightView
-            //highlightFollowsCurrentItem:true
+            cacheBuffer:256
             clip:false
             interactive:false
             snapMode :GridView.SnapOneRow
             keyNavigationEnabled: true
             keyNavigationWraps : false
-            //keyNavigationWraps : true
             Keys.onPressed:{
                 if(event.key === Qt.Key_PageUp){
                     if (!atYBeginning) {
@@ -399,13 +375,8 @@ Image {
                     listView.positionViewAtEnd()
                 }
             }
-            //Keys.onUpPressed: listView.incrementCurrentIndex()
-            //Keys.onDownPressed: listView.decrementCurrentIndex()
-            //Keys.onUpPressed:listview.positionViewAtIndex(currentIndex+1, GridView.Contain)
-            //Keys.onDownPressed: listview.positionViewAtIndex(currentIndex-1, GridView.Contain)
             Keys.onUpPressed: listView.flick(0, contentY-=310)
             Keys.onDownPressed: listView.flick(0, contentY+=310)
-            //keyNavigationWraps: false // endless scrolling
             delegate:null
             cellWidth: 200; cellHeight: 310
             onDelegateChanged:{
@@ -418,14 +389,9 @@ Image {
                     }}
                     Component.onCompleted: {
                          listView.visible=true;
-                         //listView.positionViewAtBeginning()
-                         //listView.positionViewAtEnd()
-                         //listView.positionViewAtBeginning()
-                        //listView.positionViewAtIndex(1)
-                        //listView.incrementCurrentIndex()
                     }
 
-                    Behavior on contentY{
+                    Behavior on contentY{ // smooth scroll animation
                         NumberAnimation {
                             duration: 1000
                             easing.type: Easing.OutQuad
