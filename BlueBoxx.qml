@@ -5,29 +5,33 @@ import QtQuick.Controls 1.5 as QC15
 import org.kde.plasma.components 2.0
 import org.kde.plasma.core 2.1
 import QtGraphicalEffects 1.5
-
+import QtQuick.Controls.Styles 1.4
 
 Image {
     id:root
     anchors.fill:rootMain
-    source:"bk2.png"
+    source:"bk4.jpg"
 
+    readonly property color highLightColor:"gold"
     property var movieArray:[]
     property var tvArray:[]
+    property string tvGenres:""
     property var randomArray:[]
     property var searchArray:[]
+    property var usedArray:[]
     property string selectedItem:"randomList"
     property int currentItem:0
     readonly property string url1:"movies.json"
     readonly property string url2:"tvList.json"
     readonly property string movieDir:"/home/data/Movies/"
-    readonly property string tvDir:"/home/data/Movies/Reel2/tvSeries/"
+    readonly property string tvDir:"/home/data/Movies/tvSeries/"
     readonly property string trailerDir:"/home/data/Movies/Trailers/"
 
     FontLoader {
         id: appFontStyle
         source: "KomikaTitle.ttf"
     }
+
 
     Scripts {id:scripts}
 
@@ -63,7 +67,7 @@ Image {
             height:parent.height
             color: "black"
             radius: 8
-            border.color: parent.focus ? "#55aaff":"gray"
+            border.color: parent.focus || selectedItem=="searchList" ? highLightColor:"gray" //
             border.width: 1
             antialiasing:true
 
@@ -74,9 +78,8 @@ Image {
                 smooth:true
                 visible:tf.text.length>0
                 anchors.top:parent.top
-                anchors.right:parent.right
+                anchors.left:parent.right
                 anchors.topMargin:4
-                anchors.rightMargin:-27
 
                 MouseArea {
                     anchors.fill: parent
@@ -107,7 +110,7 @@ Image {
                 cursorShape:  Qt.PointingHandCursor
                 hoverEnabled:true
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                onEntered:parent.color="#55aaff"
+                onEntered:parent.color=highLightColor
                 onExited:parent.color="white"
                 onClicked: searchPopup.open()
           }
@@ -126,11 +129,13 @@ Image {
             Image {
                 source: (selectedItem=="randomList") ? "posters"+randomArray[index].poster_path  : (selectedItem=="movieList") ? "posters"+movieArray[index].poster_path : (selectedItem=="tvList") ? "posters/"+tvArray[index].poster_path : (selectedItem=="searchList") ? (searchArray.length > 0) ? "posters"+searchArray[index].poster_path : "posters/movie-poster-credits-178.jpg" : "posters/movie-poster-credits-178.jpg"
                 fillMode : Image.PreserveAspectFit
-                height:parent.height*.87
+                sourceSize.height:parent.height*.87
                 anchors.top:parent.top
                 anchors.topMargin:4
                 anchors.horizontalCenter:parent.horizontalCenter
-                smooth:true
+                smooth: true
+                antialiasing: true
+                mipmap: true
                 cache:true
                 asynchronous:false
 
@@ -155,7 +160,7 @@ Image {
                 cursorShape:  Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                 onEntered:{
-                    parent.border.color="#55aaff"
+                    parent.border.color=highLightColor//"#55aaff"
                     parent.y+=5
                 }
                 onExited:{
@@ -165,7 +170,10 @@ Image {
                 onClicked:{
                     currentItem=-1
                     currentItem=index;
-                    selectedItem=="tvList" ? tvSeriesPopup.open() : mediaInfoPopup.open();
+                    if (selectedItem=="tvList"){
+                        tvSeriesPopup.open();
+                        scripts.tvGenre(); }
+                    else  mediaInfoPopup.open();
 
                 }
             }
@@ -176,13 +184,13 @@ Image {
         id:logoBox
         anchors.top:root.top
         anchors.left:root.left
-        anchors.margins:20
+        anchors.margins:30
         width:124
-        height:84
+        height:72
         radius:12
         color:"gray"
-        border.color:"gray"
-        border.width:.5
+        //border.color:"gray"
+        //border.width:.5
         opacity:.25
         antialiasing:true
     }
@@ -199,14 +207,14 @@ Image {
     Item {
         id:headerView
         anchors.top:root.top
-        anchors.topMargin:36
-        anchors.horizontalCenter:parent.horizontalCenter
-        height:85
-        width:parent.width/2
+        anchors.topMargin:40
+        anchors.horizontalCenter:root.horizontalCenter
+        height:80
+        width:root.width/2
 
         Row {
             anchors.horizontalCenter:parent.horizontalCenter
-            anchors.top:headerView.top
+            anchors.top:parent.top
             anchors.topMargin:15
             spacing:60
 
@@ -214,8 +222,8 @@ Image {
                 id:r1
                 width:156;height:36;
                 color:"transparent"
-                border.width:.5
-                border.color:(selectedItem=="randomList" || ma1.containsMouse) ? "#55aaff" : "gray"
+                border.width:1
+                border.color:(selectedItem=="randomList" || ma1.containsMouse) ? highLightColor : "gray"
                 radius:8
                 antialiasing:true
 
@@ -234,12 +242,17 @@ Image {
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    //onEntered:borderColor ();
-                    //onExited: borderColor ();
                     hoverEnabled:true;
                     onClicked: {
+                        if (mouse.button==Qt.LeftButton){
                         selectedItem="randomList";
                         scripts.selectedViewChanged ();
+                        }
+                        else if (mouse.button==Qt.MiddleButton){
+                            selectedItem="randomList";
+                            randomArray=[];
+                            scripts.newMovies ();
+                        }
                     }
                 }
             }
@@ -248,8 +261,8 @@ Image {
                 id:r2
                 width:156;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="movieList" || ma2.containsMouse) ? "#55aaff" : "gray"
-                border.width:.5
+                border.color:(selectedItem=="movieList" || ma2.containsMouse) ? highLightColor : "gray"
+                border.width:1
                 radius:8
                 antialiasing:true
 
@@ -266,8 +279,6 @@ Image {
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    //onEntered:borderColor ()
-                    //onExited:borderColor ()
                     hoverEnabled:true
                     onClicked: {
                         selectedItem="movieList";
@@ -280,8 +291,8 @@ Image {
                 id:r3
                 width:156;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="tvList" || ma3.containsMouse) ? "#55aaff" : "gray"
-                border.width:.5
+                border.color:(selectedItem=="tvList" || ma3.containsMouse) ? highLightColor : "gray"
+                border.width:1
                 radius:8
                 antialiasing:true
 
@@ -299,8 +310,6 @@ Image {
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    //onEntered:borderColor ()
-                    //onExited:borderColor ()
                     hoverEnabled:true
                     onClicked: {
                         selectedItem="tvList";
@@ -313,7 +322,7 @@ Image {
         Rectangle {
             id:ts1
             anchors.top:parent.bottom
-            anchors.topMargin:15
+            anchors.topMargin:10
             anchors.horizontalCenter:parent.horizontalCenter
             width:root.width*.96
             height:.5
@@ -333,17 +342,37 @@ Image {
         anchors.rightMargin:5
         anchors.bottomMargin:1
         width:root.width
-        height:root.height
+        height:root.height-headerView.height
         clip:false
         focus:true
+        verticalScrollBarPolicy : Qt.ScrollBarAsNeeded
         enabled : hovered || pressed
         __wheelAreaScrollSpeed: 310
+        style: ScrollViewStyle {
+        transientScrollBars:true
+        scrollToClickedPosition : true
+        handle: Rectangle {
+            implicitWidth: 8
+            //implicitHeight: 400
+            color: "white"
+            opacity:.85
+            radius:12
+        }
+        scrollBarBackground: Rectangle {
+            implicitWidth: 8
+            //implicitHeight: parent.height
+            color: "black"
+            radius:12
+            opacity:.25
+        }
+    }
 
 
         GridView {
             id:listView
             focus:true
             visible:true
+            parent:scrollView
             anchors.top:parent.top
             anchors.bottom:parent.bottom
             anchors.left:parent.left
@@ -353,7 +382,7 @@ Image {
             model:1
             boundsBehavior: Flickable.StopAtBounds
             cacheBuffer:256
-            clip:false
+            clip:true
             interactive:false
             snapMode :GridView.SnapOneRow
             keyNavigationEnabled: true
@@ -375,8 +404,14 @@ Image {
                     listView.positionViewAtEnd()
                 }
             }
-            Keys.onUpPressed: listView.flick(0, contentY-=310)
-            Keys.onDownPressed: listView.flick(0, contentY+=310)
+            Keys.onUpPressed: {
+                if (!atYBeginning) {
+                listView.flick(0, contentY-=310)
+                } }
+            Keys.onDownPressed:{
+                 if (!atYEnd) {
+                listView.flick(0, contentY+=310)
+                 } }
             delegate:null
             cellWidth: 200; cellHeight: 310
             onDelegateChanged:{

@@ -22,14 +22,12 @@ Item {
         xhr.onreadystatechange = function () {
             if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
                 if(fileUrl==url1) {
-                    let response = xhr.responseText;
-                    movieArray=JSON.parse(response);
-                    response=null;
+                    movieArray=JSON.parse(xhr.responseText);
+                    xhr=null;
                 }
                 else {
-                    let response = xhr.responseText;
-                    tvArray=JSON.parse(response);
-                    response=null;
+                    tvArray=JSON.parse(xhr.responseText);
+                    xhr=null;
                 }
             }
         }
@@ -43,20 +41,22 @@ Item {
         let n1=-1;
         for (x=0;x<5;x++) {
             n1=Math.floor(Math.random() * (max - min - x) );
-            while (r1.includes(n1)) {
+            if (usedArray.length < 1) {
+              usedArray.push(n1);  // keep track of what has been random generated
+            }
+            while (usedArray.includes(n1)) { // check for repeats
               n1=Math.floor(Math.random() * (max - min - x) )
             }
-            r1.push(n1); // check for repeat
+            if (usedArray.length > movieArray.length) { // reset used list if cycled thru list
+                usedArray=[];
+                usedArray.push(n1);
+            }
+            r1.push(n1);
+            randomArray.push(movieArray[r1[x]]);
+            usedArray.push(n1);
         }
-        //tempArray=JSON.parse(JSON.stringify(movieArray)) // convert json to var
-        randomArray.push(movieArray[r1[0]]);
-        randomArray.push(movieArray[r1[1]]);
-        randomArray.push(movieArray[r1[2]]);
-        randomArray.push(movieArray[r1[3]]);
-        randomArray.push(movieArray[r1[4]]);
-        r1=null;
-        //tempArray=null;
-        n1=0;
+        n1=-1
+        r1=[];
         return null;
     }
 
@@ -76,7 +76,7 @@ Item {
     }
 
     function newMovies () { // get 5 newest movies
-        let tempArray={}
+        let tempArray=[]
         tempArray=JSON.parse(JSON.stringify(movieArray))
         tempArray=tempArray.sort((a, b) => {
               return new Date(b.release_date) - new Date(a.release_date); // descending
@@ -202,6 +202,17 @@ Item {
         else return "No Results" }
     }
 
+    if (sel == "genre") {
+      if (selectedItem=="randomList")
+        return "🎭 "+randomArray[currentItem].genre.slice(0, -1).replace(/,/g, ', ')
+      else if (selectedItem=="movieList")
+        return "🎭 "+movieArray[currentItem].genre.slice(0, -1).replace(/,/g, ', ')
+      else if (selectedItem==="searchList") {
+        if (searchArray.length > 0)
+          return "🎭 "+searchArray[currentItem].genre.slice(0, -1).replace(/,/g, ', ')
+        else return "🎭  -" }
+    }
+
     if (sel == "runtime") {
       if (selectedItem=="randomList")
         return "⏳ "+randomArray[currentItem].runtime
@@ -245,5 +256,15 @@ Item {
          return "⭐  "+parseFloat(searchArray[currentItem].rating).toFixed(1).toString()
       else return "⭐  -" }
     }
+  }
+
+  function tvGenre() {
+    let temp=""
+    for (x=0;x<tvArray[currentItem].genres.length;x++) {
+      temp=temp.concat(tvArray[currentItem].genres[x],",")
+    }
+    temp=temp.slice(0, -1).replace(/,/g, ', ')
+    tvGenres=temp;
+    temp=null;
   }
 }
