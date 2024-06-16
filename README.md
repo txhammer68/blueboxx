@@ -34,7 +34,7 @@
 * ESC key will quit the app and any other popup dialogs
 
 ### Notes
-* Change directories for your movie, tv and trailer locations in
+* Change locations for your json arrays, movie, tv and trailer locations in
     * BlueBoxx.qml
 * Within json array, media links are predefined based on "media title.mp4", change for your needs
 * Why Blueboxx, cause Redbox provided most of the titles...
