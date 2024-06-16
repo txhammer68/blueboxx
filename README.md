@@ -37,7 +37,8 @@
 * Change directories for your movie, tv and trailer locations in
     * BlueBoxx.qml
 * Within json array, media links are predefined based on "media title.mp4", change for your needs
-* Why Blueboxx, cause Redboxx provided most of the titles...
+* Why Blueboxx, cause Redbox provided most of the titles...
+* https://github.com/txhammer68/blueboxx
 
 <img alt="preview" src="preview.gif" width="1280">
 
