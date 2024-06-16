@@ -39,6 +39,7 @@
 * Within json array, media links are predefined based on "media title.mp4", change for your needs
 * Why Blueboxx, cause Redbox provided most of the titles...
 * https://github.com/txhammer68/blueboxx
+* Based on Qt5, but should work ok with Qt6
 
 <img alt="preview" src="preview.gif" width="1280">
 
