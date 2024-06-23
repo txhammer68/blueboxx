@@ -155,11 +155,11 @@ QC25.Popup {
                         onCheckedChanged:{
                             if (checkState === 2) {
                                 tempString=tempString.concat(genreList[index],",")
-                                searchTerms=tempString;
+                                searchTerms=tempString.replace(/,\s*$/, "").replace(/^,/, '')
                             }
                             if (checkState === 0) {
-                                tempString=tempString.replace(genreList[index],"")
-                                searchTerms=tempString;
+                                tempString=tempString.replace(genreList[index],"").replace(/,\s*$/, "")
+                                searchTerms=tempString.replace(/,\s*$/, "").replace(/^,/, '')
                             }
                         }
                     }
@@ -194,11 +194,11 @@ QC25.Popup {
                     onCheckedChanged:{
                         if (checkState === 2) {
                             tempString=tempString.concat(genreList[index+10],",")
-                            searchTerms=tempString;
+                            searchTerms=tempString.replace(/,\s*$/, "").replace(/^,/, '')
                         }
                         if (checkState === 0) {
-                            tempString=tempString.replace(genreList[index+10],"")
-                            searchTerms=tempString;
+                            tempString=tempString.replace(genreList[index+10],"").replace(/,\s*$/, "")
+                            searchTerms=tempString.replace(/,\s*$/, "").replace(/^,/, '')
                         }
                     }
                 }
