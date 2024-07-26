@@ -1,5 +1,6 @@
 ## BlueBoxx Media Manager App
 
+* A DIY media manager project
 * Simple python/qml app for organizing movies/tv shows
 * Using json arrays for media lookup
 * Lighweight and Fast
@@ -23,6 +24,7 @@
 * Linux, preferrably KDE Plasma distro
 * Python 3, python3-pyqt5, python3-pyqt5.quick, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtQml, PyQt5.QtWidgets
 * mpv, vlc or other media player
+* Should work on Windows,Mac OS as python is cross platform, not tested.
 
 ### Usage
 * Launch app with python3 blueboxx.py
@@ -36,10 +38,10 @@
 ### Notes
 * Change locations for your json arrays, movie, tv and trailer locations in
     * BlueBoxx.qml
-* Within json array, media links are predefined based on "media title.mp4", change for your needs
+* Within json array, media links are predefined as "media title - Trailer.mp4", "media title.mp4", change for your needs
 * Why Blueboxx, cause Redbox provided most of the titles...
 * https://github.com/txhammer68/blueboxx
-* Based on Qt5, but should work ok with Qt6
+* Based on Qt5, but should work with Qt6
 
-<img alt="preview" src="preview.gif" width="1280">
+<img alt="preview" src="preview.gif" width="1400">
 
