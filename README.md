@@ -39,9 +39,9 @@
 * Change locations for your json arrays, movie, tv and trailer locations in
     * BlueBoxx.qml
 * Within json array, media links are predefined as "media title - Trailer.mp4", "media title.mp4", change for your needs
-* Why Blueboxx, cause Redbox provided most of the titles...
-* https://github.com/txhammer68/blueboxx
+* Why Blueboxx, cause Redbox provided most of the titles :)
 * Based on Qt5, but should work with Qt6
+* https://github.com/txhammer68/blueboxx
 
 <img alt="preview" src="preview.gif" width="1400">
 
