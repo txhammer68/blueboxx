@@ -1,4 +1,93 @@
 [
+    {
+    "title": "Alien Collection",
+    "overview": "A science fiction horror film franchise, focusing on Lieutenant Ellen Ripley (Sigourney Weaver) and her battle with an extraterrestrial life-form, commonly referred to as the Alien. Produced by 20th Century Fox, the series started with the 1979 film Alien, then Aliens in 1986, Alien\u00b3 in 1992, and Alien: Resurrection in 1997.",
+    "poster_path": "/yriOcdpJ6gQIAuWGZvtgSzkhWoz.jpg",
+    "backdrop_path": "/kB0Y3uGe9ohJa59Lk8UO9cUOxGM.jpg",
+    "genre": "Horror,Science Fiction,",
+    "release_date": "1979-05-25",
+    "collection": 1,
+    "parts": [
+      {
+        "title": "Alien",
+        "overview": "During its return to the earth, commercial spaceship Nostromo intercepts a distress signal from a distant planet. When a three-member team of the crew discovers a chamber containing thousands of eggs on the planet, a creature inside one of the eggs attacks an explorer. The entire crew is unaware of the impending nightmare set to descend upon them when the alien parasite planted inside its unfortunate host is birthed.",
+        "rating": 8.2,
+        "poster_path": "/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg",
+        "backdrop_path": "/hdHIjZxq3SWFqpAz4NFhdbud0iz.jpg",
+        "runtime": "1:57",
+        "release_date": "1979-05-25",
+        "genre": "Horror,Science Fiction,",
+        "trailer": "Alien - Trailer.mp4",
+        "link": "Alien.mp4",
+        "id": 348
+      },
+      {
+        "title": "Aliens",
+        "overview": "Ripley, the sole survivor of the Nostromo's deadly encounter with the monstrous Alien, returns to Earth after drifting through space in hypersleep for 57 years. Although her story is initially met with skepticism, she agrees to accompany a team of Colonial Marines back to LV-426.",
+        "rating": 7.9,
+        "poster_path": "/r1x5JGpyqZU8PYhbs4UcrO1Xb6x.jpg",
+        "backdrop_path": "/jMBpJFRtrtIXymer93XLavPwI3P.jpg",
+        "runtime": "2:17",
+        "release_date": "1986-07-18",
+        "genre": "Action,Thriller,Science Fiction,",
+        "trailer": "Aliens - Trailer.mp4",
+        "link": "Aliens.mp4",
+        "id": 679
+      },
+      {
+        "title": "Alien\u00b3",
+        "overview": "After escaping with Newt and Hicks from the alien planet, Ripley crash lands on Fiorina 161, a prison planet and host to a correctional facility. Unfortunately, although Newt and Hicks do not survive the crash, a more unwelcome visitor does. The prison does not allow weapons of any kind, and with aid being a long time away, the prisoners must simply survive in any way they can.",
+        "rating": 6.4,
+        "poster_path": "/xh5wI0UoW7DfS1IyLy3d2CgrCEP.jpg",
+        "backdrop_path": "/owiT3FUjdQ2LEj4YxiT6vjPVcS4.jpg",
+        "runtime": "1:54",
+        "release_date": "1992-05-22",
+        "genre": "Science Fiction,Action,Horror,",
+        "trailer": "Alien\u00b3 - Trailer.mp4",
+        "link": "Alien\u00b3.mp4",
+        "id": 8077
+      },
+      {
+        "title": "AVP: Alien vs. Predator",
+        "overview": "When scientists discover something in the Arctic that appears to be a buried Pyramid, they send a research team out to investigate. Little do they know that they are about to step into a hunting ground where Aliens are grown as sport for the Predator race.",
+        "rating": 5.9,
+        "poster_path": "/2DKoPom57PVtJWcJlq7bS7JpahU.jpg",
+        "backdrop_path": "/tOvoWzkUzCMJ8Ra5nkmNg7ehCET.jpg",
+        "runtime": "1:40",
+        "release_date": "2004-08-12",
+        "genre": "Adventure,Science Fiction,Action,Horror,",
+        "trailer": "AVP: Alien vs. Predator - Trailer.mp4",
+        "link": "AVP: Alien vs. Predator.mp4",
+        "id": 395
+      },
+      {
+        "title": "Alien: Prometheus",
+        "overview": "A team of explorers discover a clue to the origins of mankind on Earth, leading them on a journey to the darkest corners of the universe. There, they must fight a terrifying battle to save the future of the human race.",
+        "rating": 6.5,
+        "poster_path": "/m7nZCtHJyDLncBUarfM5h5mrppx.jpg",
+        "backdrop_path": "/vMDdWQuvOjg9yUjMJrNunXq9cmw.jpg",
+        "runtime": "2:04",
+        "release_date": "2012-05-30",
+        "genre": "Science Fiction,Adventure,Mystery,",
+        "trailer": "Alien: Prometheus - Trailer.mp4",
+        "link": "Alien: Prometheus.mp4",
+        "id": 70981
+      },
+      {
+        "title": "Alien: Covenant",
+        "overview": "The crew of the colony ship Covenant, bound for a remote planet on the far side of the galaxy, discovers what they think is an uncharted paradise but is actually a dark, dangerous world.",
+        "rating": 6.1,
+        "poster_path": "/zecMELPbU5YMQpC81Z8ImaaXuf9.jpg",
+        "backdrop_path": "/la2xlHuHqdOn10g6Prux4d5278B.jpg",
+        "runtime": "2:02",
+        "release_date": "2017-05-09",
+        "genre": "Science Fiction,Horror,Mystery,",
+        "trailer": "Alien: Covenant - Trailer.mp4",
+        "link": "Alien: Covenant.mp4",
+        "id": 126889
+      }
+    ]
+  },
 {
     "title": "Antitrust",
     "overview": "A computer programmer's dream job at a hot Portland-based firm turns nightmarish when he discovers his boss has a secret and ruthless means of dispatching anti-trust problems.",
