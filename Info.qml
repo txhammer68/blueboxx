@@ -7,34 +7,50 @@ import QtGraphicalEffects 1.5
 
 QC25.Popup {
     anchors.centerIn: parent
-    width: 1400
+    width: 1600
     height: 900
     modal: true
     focus: true
+    //dim:false
 
     //closePolicy: mediaInfoPopup.CloseOnEscape || mediaInfoPopup.CloseOnPressOutsideParent || mediaInfoPopup.CloseOnPressOutside
 
     onClosed: {
         mplayer.stop();
         mplayer.source="";
+        bkBlur.opacity=0;
         overlayRect.visible=false;
-        playIconOverlay.color=Theme.textColor
+        playIconOverlay.color="white"
         playButton.visible=true;
         trailerButton.visible=true;
         summary.visible=true;
         scrollView.focus=true;
         listView.focus=true;
         voutput.opacity=-1;
-        Qt.cursorShape=Qt.ArrowCursor;
+        currentItem=-1;
+        contentChildren=[];
+        contentData=[];
+        listView.focus=true;
     }
+
+    onOpened:{
+         Qt.cursorShape=Qt.ArrowCursor;
+         bkBlur.opacity=1
+         playIconOverlay.color="white"
+    }
+
 
     QC25.Overlay.modal: GaussianBlur {
         source: ShaderEffectSource {
+            id:bkBlur
             sourceItem: bluebox
             live: false
         }
-        radius: 16
+        radius: 24
         samples: radius * 2
+        opacity:0
+        smooth:true
+        Behavior on opacity { NumberAnimation { duration: 300 } }
     }
 
     enter: Transition {
@@ -53,13 +69,14 @@ QC25.Popup {
             from: 1.0
             to: 0.6;
             easing.type: Easing.InBack
-            duration: 300
+            duration: 400
         }
     }
 
     background: Rectangle {
         id:backgroundRect
         antialiasing:true
+        smooth:true
         color:"transparent"
         radius:8
 
@@ -71,8 +88,8 @@ QC25.Popup {
             //height:parent.height*.996
             fillMode : Image.PreserveAspectCrop
             opacity:1
-            smooth: true
-            antialiasing: true
+            //smooth: true
+            //antialiasing: true
             mipmap: true
             visible:false
         }
@@ -83,7 +100,9 @@ QC25.Popup {
                 maskSource: Rectangle {
                     width: backdropImg.width
                     height: backdropImg.height
-                    radius: 8
+                    radius: 10
+                    antialiasing:true
+                    smooth:true
                     visible: false // this also needs to be invisible or it will cover up the image
                 }
             }
@@ -112,8 +131,9 @@ QC25.Popup {
             height:titleHeaderHidden.height
             color:"black"
             opacity:.65
-            radius:12
+            radius:8
             antialiasing:true
+            smooth:true
         }
 
         Text {
@@ -129,10 +149,11 @@ QC25.Popup {
 
         Image {
             id:playButton
-            source:"play.png"
+            source:"play-button.png"
             anchors.centerIn:parent
             antialiasing:true
             smooth:true
+            mipmap:true
             sourceSize.width:128
             sourceSize.height:128
 
@@ -142,8 +163,8 @@ QC25.Popup {
                 hoverEnabled:true
                 cursorShape:  Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton
-                onEntered:playIconOverlay.color="#55aaff"
-                onExited: playIconOverlay.color=Theme.textColor
+                onEntered:playIconOverlay.color=highLightColor
+                onExited: playIconOverlay.color="white"
                 onClicked:{
                     scripts.selectSource ("media");
                     tf.text="";
@@ -156,7 +177,8 @@ QC25.Popup {
                 id:playIconOverlay
                 anchors.fill: playButton
                 source: playButton
-                color: Theme.textColor
+                color: "white"
+                smooth:true
             }
         }
 
@@ -186,8 +208,10 @@ QC25.Popup {
             color:"black"
             width:parent.width*.95
             height:hiddenSummary.height
-            radius:12
+            radius:8
             opacity:.65
+            antialiasing:true
+            smooth:true
         }
 
             Text {
@@ -214,7 +238,8 @@ QC25.Popup {
                     antialiasing:true
                 }
 
-            Rectangle {
+          Rectangle {
+                id:genre
                 width:hiddenGenre.width+15
                 height:24
                 anchors.left:parent.left
@@ -222,10 +247,11 @@ QC25.Popup {
                 anchors.bottomMargin:10
                 anchors.leftMargin:40
                 color:Qt.rgba(0,0,0,.65)
-                radius:8
+                radius:6
                 border.color:"gray"
                 border.width:.5
                 antialiasing:true
+                smooth:true
 
                 Text {
                     anchors.centerIn:parent
@@ -236,64 +262,53 @@ QC25.Popup {
                 }
             }
 
-        Row {
-            anchors.bottom:parent.bottom
-            anchors.right:summaryBox.right
-            anchors.bottomMargin:10
-            anchors.rightMargin:15
-            spacing:20
-            width:140
-            Rectangle {
-                width:64
-                height:24
-                color:Qt.rgba(0,0,0,.65)
-                radius:8
-                border.color:"gray"
-                border.width:.5
-                antialiasing:true
+        Rectangle {
+            id:rating
+            anchors.bottom:genre.bottom
+            anchors.left:genre.right
+            anchors.leftMargin:20
+            width:64
+            height:24
+            radius:6
+            color:Qt.rgba(0,0,0,.65)
+            border.color:"gray"
+            border.width:.5
+            antialiasing:true
+            smooth:true
 
-                Text {
-                    anchors.centerIn:parent
-                    text:scripts.selectSource ("runtime")
-                    color:Qt.rgba(1,1,1,1)
-                    opacity:1
-                    font.pointSize:11
-                    antialiasing:true
-                }
+            Text {
+                anchors.centerIn:parent
+                text:scripts.selectSource ("rating")
+                color:Qt.rgba(1,1,1,1)
+                font.pointSize:10
+                antialiasing:true
             }
 
-            Rectangle {
-                width:68
-                height:24
-                color:Qt.rgba(0,0,0,.65)
-                radius:8
-                border.color:"gray"
-                border.width:.5
-                antialiasing:true
-
-                Text {
-                    anchors.centerIn:parent
-                    text:scripts.selectSource ("date")
-                    color:Qt.rgba(1,1,1,1)
-                    font.pointSize:11
-                    antialiasing:true
-                }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled:true
+                cursorShape:  Qt.PointingHandCursor
+                acceptedButtons: Qt.LeftButton
+                onEntered: parent.border.color="#55aaff"
+                onExited: parent.border.color="gray"
+                onClicked:Qt.openUrlExternally("https://www.themoviedb.org/movie/"+scripts.selectSource ("id"))
             }
         }
 
         Rectangle {
             id:trailerButton
-            anchors.top:parent.top
-            anchors.left:parent.left
-            anchors.margins:15
+            anchors.bottom:rating.bottom
+            anchors.left:rating.right
+            anchors.leftMargin:20
             width:84
             height:24
-            radius:8
+            radius:6
             ///color:"black"
             color:Qt.rgba(0,0,0,.65)
             border.color:"gray"
             border.width:.5
             antialiasing:true
+            smooth:true
 
             Text {
                 anchors.centerIn:parent
@@ -313,10 +328,11 @@ QC25.Popup {
                 onExited: trailerButton.border.color="gray"
                 onClicked:{
                     summary.visible=false;
+                    Qt.cursorShape=Qt.BlankCursor;
                     mplayer.source=scripts.selectSource ("trailer");
-                    playButton.visible=false;
+                    //playButton.visible=false;
                     overlayRect.visible=true;
-                    trailerButton.visible=false;
+                    //trailerButton.visible=false;
                     voutput.opacity=0;
                     voutput.opacity=1;
                     mplayer.play();
@@ -324,24 +340,50 @@ QC25.Popup {
             }
         }
 
-        Rectangle {
-            anchors.top:parent.top
-            anchors.right:parent.right
-            anchors.margins:15
-            width:64
-            height:24
-            radius:8
-            color:Qt.rgba(0,0,0,.65)
-            border.color:"gray"
-            border.width:.5
-            antialiasing:true
-
-            Text {
-                anchors.centerIn:parent
-                text:scripts.selectSource ("rating")
-                color:Qt.rgba(1,1,1,1)
-                font.pointSize:10
+        Row {
+            anchors.bottom:parent.bottom
+            anchors.right:summaryBox.right
+            anchors.bottomMargin:10
+            anchors.rightMargin:15
+            spacing:20
+            width:140
+            Rectangle {
+                width:64
+                height:24
+                color:Qt.rgba(0,0,0,.65)
+                radius:6
+                border.color:"gray"
+                border.width:.5
                 antialiasing:true
+                smooth:true
+
+                Text {
+                    anchors.centerIn:parent
+                    text:scripts.selectSource ("runtime")
+                    color:Qt.rgba(1,1,1,1)
+                    opacity:1
+                    font.pointSize:11
+                    antialiasing:true
+                }
+            }
+
+            Rectangle {
+                width:68
+                height:24
+                color:Qt.rgba(0,0,0,.65)
+                radius:6
+                border.color:"gray"
+                border.width:.5
+                antialiasing:true
+                smooth:true
+
+                Text {
+                    anchors.centerIn:parent
+                    text:scripts.selectSource ("date")
+                    color:Qt.rgba(1,1,1,1)
+                    font.pointSize:11
+                    antialiasing:true
+                }
             }
         }
 
@@ -352,6 +394,8 @@ QC25.Popup {
         height:parent.height
         radius:8
         visible:false
+        antialiasing:true
+        smooth:true
     }
 
         MediaPlayer {
@@ -361,25 +405,27 @@ QC25.Popup {
             loops:0
             playbackRate:1
             source:""
+            notifyInterval:500
             onStopped: {
                  mplayer.source="";
-                 playButton.visible=true;
+                 Qt.cursorShape=Qt.BlankCursor;
+                 playButton.opacity=1;
                  trailerButton.visible=true;
                  summary.visible=true;
                  overlayRect.visible=false;
                  voutput.opacity=0;
                  voutput.focus=false;
                  parent.focus=true;
+                 listView.focus=true;
             }
             onPlaying:{
-                 playButton.visible=false;
-                 trailerButton.visible=false;
-                 Qt.cursorShape=Qt.ArrowCursor;
-                 summary.visible=false;
+                 //playButton.visible=false;
+                 //railerButton.visible=false;
+                 //summary.visible=false;
                  overlayRect.visible=true;
                  voutput.opacity=1;
                  voutput.focus=true;
-                 parent.focus=false;
+                 //parent.focus=false;
             }
         }
 
@@ -389,13 +435,37 @@ QC25.Popup {
             anchors.fill: parent
             source: mplayer
             smooth:true
+            visible:true
             opacity:0
             Behavior on opacity {
                     OpacityAnimator {
                         duration:1500
                         easing.type: Easing.InCubic
                     }}
-             Keys.onSpacePressed: mplayer.stop();
+             Keys.onSpacePressed: {
+                 mplayer.stop();
+                 mplayer.source="";
+                 playButton.opacity=1;
+                 trailerButton.visible=true;
+                 summary.visible=true;
+                 overlayRect.visible=false;
+                 voutput.opacity=0;
+                 voutput.focus=false;
+                 parent.focus=true;
+                 listView.focus=true;
+             }
+             Keys.onEscapePressed: {
+                 mplayer.stop();
+                 mplayer.source="";
+                 playButton.opacity=1;
+                 trailerButton.visible=true;
+                 summary.visible=true;
+                 overlayRect.visible=false;
+                 voutput.opacity=0;
+                 voutput.focus=false;
+                 parent.focus=true;
+                 listView.focus=true;
+             }
         }
     }
 }

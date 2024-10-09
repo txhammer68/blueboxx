@@ -6,7 +6,7 @@ import QtGraphicalEffects 1.5
 
 QC25.Popup {
     anchors.centerIn: parent
-    width: 1400
+    width: 1600
     height: 900
     modal: true
     focus: true
@@ -27,17 +27,28 @@ QC25.Popup {
         episodeAirDate.text="";
         playButton.visible=false;
         playIconOverlay.visible=false;
-        scrollView.focus=true;
+        listView.focus=true;
+        bkBlur2.opacity=0;
+        contentChildren=[];
+        contentData=[];
+    }
+
+    onOpened:{
+         Qt.cursorShape=Qt.ArrowCursor;
+         bkBlur2.opacity=1;
     }
 
     QC25.Overlay.modal: GaussianBlur {
         source: ShaderEffectSource {
+            id:bkBlur2
             sourceItem: bluebox
             live: false
         }
-        radius: 16
+        radius: 24
         samples: radius * 2
-
+        smooth:true
+        opacity:0
+        Behavior on opacity { NumberAnimation { duration: 300 } }
     }
 
     enter: Transition {
@@ -64,18 +75,17 @@ QC25.Popup {
         //border.color: "gray"
         //border.width:.5
         antialiasing:true
+        smooth:true
         color:"transparent"
         radius:8
 
         Image{
             id:tvBackdropImg
             source:"backdrops"+tvArray[currentItem].backdrop_path
-            anchors.centerIn:parent
-            width:parent.width
-            height:parent.height
-            fillMode : Image.PreserveAspectStretch
-            smooth: true
-            antialiasing: true
+            anchors.fill:parent
+            fillMode : Image.PreserveAspectCrop
+            //smooth: true
+            //antialiasing: true
             mipmap: true
             visible:false
         }
@@ -87,6 +97,8 @@ QC25.Popup {
                 width: tvBackdropImg.width
                 height: tvBackdropImg.height
                 radius: 8
+                antialiasing:true
+                smooth:true
                 visible: false // this also needs to be invisible or it will cover up the image
             }
         }
@@ -101,6 +113,8 @@ QC25.Popup {
             height:hiddentShowTitle.height+10
             radius:12
             opacity:.65
+            antialiasing:true
+            smooth:true
         }
 
         Text {
@@ -148,6 +162,7 @@ QC25.Popup {
                 opacity:.65
                 radius:12
                 antialiasing:true
+                smooth:true
             }
 
             Row {
@@ -191,26 +206,52 @@ QC25.Popup {
             id:episodeBox
             anchors.top:seasonSelections.bottom
             anchors.left:parent.left
-            anchors.leftMargin:260
+            anchors.leftMargin:340
             anchors.topMargin:80
             color:"black"
             width:420
-            height:480
-            radius:12
+            height:485
+            radius:8
             opacity:.65
             visible:childGroup.checkState
             antialiasing:true
+            smooth:true
         }
+
+        Text {
+            id:seasonTitle
+             anchors.top:episodeBox.top
+             anchors.horizontalCenter:episodeBox.horizontalCenter
+             anchors.margins:20
+             text:tvArray[currentItem].seasons[selSeason].name
+             color:"white"
+             antialiasing:true
+             font.bold:true
+             font.pointSize:14
+             visible:childGroup.checkState
+
+             MouseArea {  // play entire season playlist
+                    id: mouseAreaSeason
+                    anchors.fill: parent
+                    cursorShape:  Qt.PointingHandCursor
+                    hoverEnabled:true
+                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="white"
+                    onClicked: Qt.openUrlExternally(tvDir+tvArray[currentItem].name+"/"+tvArray[currentItem].seasons[selSeason].playlist) // need to add this each tv season json entry
+                }
+        }
+
 
         ListView {
             id:episodeList
-            anchors.top:episodeBox.top
+            anchors.top:seasonTitle.bottom
             anchors.left:episodeBox.left
             anchors.margins:15
             clip:true
             width:episodeBox.width*.95
-            height:episodeBox.height*.95
-            spacing: 5
+            height:episodeBox.height*.85
+            spacing: 8
             //model: 24
             delegate:
             Text {
@@ -218,15 +259,31 @@ QC25.Popup {
                 antialiasing:true
                 font.pointSize:14
                 color:"white"
-                bottomPadding:10
+                bottomPadding:5
+                leftPadding:5
+                topPadding:5
+                rightPadding:7
+                width:parent.width*.97
+                elide: Text.ElideRight
+                wrapMode: Text.NoWrap
+                Rectangle {
+                    //width:parent.width+5
+                    //height:parent.height+5
+                    color:"transparent"
+                    //border.color:"transparent"
+                    anchors.fill:parent
+                    radius:6
+                    antialiasing:true
+                    smooth:true
+                    z:-1
                 MouseArea {
                     id: mouseArea1a
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color="#55aaff"
-                    onExited:parent.border.color="transparent"
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="transparent"
                     onClicked:{
                         episodeTitle.text=tvArray[currentItem].seasons[selSeason].episodes[index].name
                         episodeInfo.text= tvArray[currentItem].seasons[selSeason].episodes[index].overview
@@ -235,6 +292,7 @@ QC25.Popup {
                         selEpisode=index;
                     }
                 }
+              }
             }
             onModelChanged:{
                 opacity=0;
@@ -244,6 +302,41 @@ QC25.Popup {
                         duration:300
                         easing.type: Easing.InCubic
                     }}
+
+             QC25.ScrollBar.vertical: QC25.ScrollBar {
+                id:vbar
+                active:hovered
+                policy: "AlwaysOn"
+                snapMode : "SnapOnRelease"
+                contentItem: Rectangle {
+                    id:rect1
+                    implicitWidth: 4
+                    radius:6
+                    color: "white"
+                    opacity:1
+                    antialiasing:true
+                    smooth:true
+                    Behavior on opacity {
+                    OpacityAnimator {
+                        duration: units.longDuration
+                        easing.type: opacity ? Easing.OutCubic:Easing.InCubic
+                    }}
+                }
+                background: Rectangle {
+                    id:rect2
+                    implicitWidth: 4
+                    radius:6
+                    opacity:.45
+                    antialiasing:true
+                    smooth:true
+                    color: "black"
+                    Behavior on opacity {
+                    OpacityAnimator {
+                        duration: units.longDuration
+                        easing.type: opacity ? Easing.OutCubic:Easing.InCubic
+                    }}
+                }
+            }
         }
 
         Rectangle {
@@ -254,11 +347,12 @@ QC25.Popup {
             //anchors.topMargin:60
             color:"black"
             width:420
-            height:480
-            radius:12
+            height:485
+            radius:8
             opacity:.65
             visible:episodeTitle.text
             antialiasing:true
+            smooth:true
         }
 
 
@@ -287,11 +381,11 @@ QC25.Popup {
             anchors.left:episodeInfoBox.left
             leftPadding:15
             topPadding:20
+            bottomPadding:20
             color:"white"
             antialiasing:true
             font.pointSize:14
             width:episodeInfoBox.width*.95
-            bottomPadding:20
             height:episodeInfoBox.height*.85
             elide: Text.ElideRight
             wrapMode: Text.Wrap
@@ -336,6 +430,7 @@ QC25.Popup {
                 border.color:"gray"
                 border.width:.5
                 antialiasing:true
+                smooth:true
                 visible:episodeRunTime.text
 
                 Text {
@@ -356,6 +451,7 @@ QC25.Popup {
                 border.color:"gray"
                 border.width:.5
                 antialiasing:true
+                smooth:true
                 visible:episodeAirDate.text
 
                 Text {
@@ -371,10 +467,11 @@ QC25.Popup {
 
         Image {
             id:playButton
-            source:"play.png"
+            source:"play-button.png"
             anchors.centerIn:episodeInfoBox
             antialiasing:true
             smooth:true
+            mipmap:true
             sourceSize.width:64
             sourceSize.height:64
             visible:false
@@ -384,20 +481,21 @@ QC25.Popup {
             id:playIconOverlay
             anchors.fill: playButton
             source: playButton
-            color: "#55aaff"
+            color: highLightColor
             visible:false
+            smooth:true
         }
 
         Text {
             id:hiddenSummary
             anchors.bottom:parent.bottom
             anchors.left:parent.left
-            text:tvArray[currentItem].overview
+            text:tvArray[currentItem].overview.replace(/\n|\r/g, "")
             color:"white"
             antialiasing:true
             font.pointSize:16
-            bottomPadding:10
-            width:parent.width*.90
+            bottomPadding:15
+            width:parent.width*.91
             elide: Text.ElideRight
             wrapMode: Text.Wrap
             visible:false
@@ -411,15 +509,16 @@ QC25.Popup {
             color:"black"
             width:parent.width*.95
             height:hiddenSummary.height*1.25
-            radius:12
+            radius:8
             opacity:.65
             antialiasing:true
+            smooth:true
 
             Text {
                 id:summary
                 anchors.top:parent.top
                 anchors.left:parent.left
-                text:tvArray[currentItem].overview
+                text:tvArray[currentItem].overview.replace(/\n|\r/g, "")
                 color:"white"
                 antialiasing:true
                 font.pointSize:16
@@ -439,11 +538,12 @@ QC25.Popup {
             width:episodeGenre.width+10
             height:28
             color:"black"
-            radius:8
+            radius:6
             opacity:.65
             border.color:"gray"
             border.width:.5
             antialiasing:true
+            smooth:true
         }
 
 

@@ -1,5 +1,5 @@
 import QtQuick 2.9
-
+// scripts for blueboxx app
 Item {
 
     Component.onCompleted: {
@@ -12,8 +12,12 @@ Item {
         id:init
         running:false
         repeat:false
-        interval:200
-        onTriggered:newMovies();
+        interval:250
+        onTriggered:{
+          movieCnt();
+          newMovies();
+          initRandom();
+        }
     }
 
     function getData(fileUrl){
@@ -23,10 +27,12 @@ Item {
             if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
                 if(fileUrl==url1) {
                     movieArray=JSON.parse(xhr.responseText);
+                    //movieArrayChanged();
                     xhr=null;
                 }
                 else {
                     tvArray=JSON.parse(xhr.responseText);
+                    //tvArrayChanged();
                     xhr=null;
                 }
             }
@@ -35,43 +41,82 @@ Item {
         return null;
     }
 
-    function randomGen (min,max) {
-
-        let r1=[];
-        let n1=-1;
-        for (x=0;x<5;x++) {
-            n1=Math.floor(Math.random() * (max - min - x) );
-            if (usedArray.length < 1) {
-              usedArray.push(n1);  // keep track of what has been random generated
-            }
-            while (usedArray.includes(n1)) { // check for repeats
-              n1=Math.floor(Math.random() * (max - min - x) )
-            }
-            if (usedArray.length > movieArray.length) { // reset used list if cycled thru list
-                usedArray=[];
-                usedArray.push(n1);
-            }
-            r1.push(n1);
-            randomArray.push(movieArray[r1[x]]);
-            usedArray.push(n1);
+    function movieCnt () {
+         let t1=0
+         for (x=0;x<movieArray.length;x++) {
+           if (movieArray[x].hasOwnProperty("collection")) {
+             collectionItems+=1
+             t1+=movieArray[x].parts.length
+           }
         }
-        n1=-1
-        r1=[];
-        return null;
+      collectionCount=t1;
+      //movieCount=movieArray.length+collectionCount-collectionItems
+      return null;
+    }
+
+    function shuffle(o) {
+          for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+          return o;
+      }
+
+    function initRandom() {
+       usedArray=[];
+       idx=0;
+       for (x=0;x<movieArray.length;x++){
+        usedArray.push(x)
+       }
+      usedArray=shuffle(usedArray);
+      usedArray=shuffle(usedArray);
+      return null;
+    }
+
+    function randomGen() {
+      //randomArray=[];
+      for (x=0;x<5;x++) {
+        if(idx==usedArray.length){
+           initRandom();
+        }
+        randomArray.push(movieArray[usedArray[idx]]);
+        idx++
+      }
+      return null;
     }
 
     function searchMovies (s) {
-        searchArray = movieArray.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+        let t1=[]
+        let t2=[]
+        searchArray=movieArray.filter(item => item.title.toLowerCase().includes(s.toLowerCase()))
+        for (x=0;x<movieArray.length;x++) {
+          if (movieArray[x].hasOwnProperty("collection") ) {
+            for (y=0;y<movieArray[x].parts.length;y++) {
+              if (movieArray[x].parts[y].title.toLowerCase().includes(s.toLowerCase() ))
+                t1.push(movieArray[x].parts[y])
+            }
+          }
+        }
+        t2=t2.concat(searchArray);
+        t2=t2.concat(t1);
+        searchArray=t2;
+        searchArray.sort((a, b) => (a.title > b.title ? 1 : -1));
+        t1=null;
+        t2=null;
+       // searchArrayChanged();
         return null;
     }
 
     function genreSearch (s) {
         searchArray = movieArray.filter(item => item.genre.includes(s));
+        //searchArrayChanged();
         return null;
     }
 
     function yearSearch (s) {
+        var t1=[]
         searchArray = movieArray.filter(item =>  Math.floor(new Date(item.release_date).getFullYear()/10)*10 == s);
+        //t1 = movieArray.filter(item => item.parts.filter(x => Math.floor(new Date(x.release_date).getFullYear()/10)*10 == s))
+        //t1 = movieArray.filter(x => x.hasOwnProperty('parts')  && Math.floor(new Date(x.release_date).getFullYear()/10)*10 == s)
+        //searchArray=t1
+        //searchArrayChanged();
         return null;
     }
 
@@ -87,6 +132,7 @@ Item {
         randomArray.push(tempArray[3])
         randomArray.push(tempArray[4])
         tempArray=null;
+       // randomArrayChanged();
         selectedItem="randomList"
         listView.model=randomArray.length
         listView.anchors.leftMargin=500;
@@ -103,27 +149,38 @@ Item {
         if (selectedItem == "randomList") {
             randomArray=[];
             searchArray=[];
-            scripts.randomGen(0,movieArray.length);
+            collectionArray=[];
+           // randomArrayChanged();
+            //searchArrayChanged();
+            //collectionArrayChanged();
+            randomGen();
+            movieCount=movieArray.length+collectionCount-collectionItems
+            tf.placeholderText="Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
             tf.focus=false
             tf.text=""
-            scrollView.focus=true;
             listView.anchors.leftMargin=500;
             listView.anchors.topMargin=140;
             listView.model=randomArray.length;
             listView.delegate=null;
             listView.delegate=movieView;
             listView.positionViewAtBeginning();
+            listView.focus=true;
         return null; }
 
         else if (selectedItem == "movieList") {
             randomArray=[];
             searchArray=[];
+            collectionArray=[];
+            movieCount=movieArray.length+collectionCount-collectionItems
+            tf.placeholderText="Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
             tf.focus=false;
             tf.text=""
-            scrollView.focus=true;
+            //randomArrayChanged();
+            //searchArrayChanged();
+            //collectionArrayChanged();
             listView.focus=true;
-            listView.anchors.leftMargin=60;
-            listView.anchors.topMargin=10;
+            listView.anchors.leftMargin=65;
+            listView.anchors.topMargin=30;
             listView.model=movieArray.length;
             listView.delegate=null;
             listView.delegate=movieView;
@@ -131,24 +188,34 @@ Item {
         return null; }
 
         else if (selectedItem == "searchList") {
+            randomArray=[];
+            collectionArray=[];
+            //randomArrayChanged();
+            //collectionArrayChanged();
+            movieCount=searchArray.length > 0 ? searchArray.length:0
+            tf.focus=false;
+            tf.placeholderText="Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
             listView.model=searchArray.length < 1 ? searchArray.length+1 : searchArray.length
-            scrollView.focus=true
-            listView.anchors.leftMargin=searchArray.length < 9 ? (listView.width/2)-(listView.model*listView.cellWidth/2) : 60
-            listView.anchors.topMargin=10;
+            listView.anchors.leftMargin=searchArray.length < 9 ? (listView.width/2)-(listView.model*listView.cellWidth/2) : 65
+            listView.anchors.topMargin=30;
             listView.delegate=null;
             listView.delegate=movieView;
             listView.positionViewAtBeginning();
-            tf.focus=false;
         return null; }
 
         else if (selectedItem == "tvList") {
             randomArray=[];
             searchArray=[];
+            collectionArray=[];
             tf.focus=false;
             tf.text=""
-            scrollView.focus=true;
-            listView.anchors.leftMargin=60;
-            listView.anchors.topMargin=10;
+            //randomArrayChanged();
+            //searchArrayChanged();
+            //collectionArrayChanged();
+            movieCount=movieArray.length+collectionCount-collectionItems
+            tf.placeholderText="Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
+            listView.anchors.leftMargin=65;
+            listView.anchors.topMargin=30;
             listView.model=tvArray.length;
             listView.delegate=null;
             listView.delegate=movieView;
@@ -160,13 +227,26 @@ Item {
    function selectSource (sel) {
      if (sel == "backdrop") {
        if (selectedItem=="randomList")
-        return "backdrops"+randomArray[currentItem].backdrop_path
+        return "./backdrops"+randomArray[currentItem].backdrop_path
       else if (selectedItem=="movieList")
-        return "backdrops"+movieArray[currentItem].backdrop_path
+        return "./backdrops"+movieArray[currentItem].backdrop_path
       else if (selectedItem=="searchList")
         if (searchArray.length > 0)
-           return "backdrops"+searchArray[currentItem].backdrop_path
+           return "./backdrops"+searchArray[currentItem].backdrop_path
      else return "bk2.png"
+    }
+
+    if (sel == "poster") {
+       if (selectedItem=="randomList")
+        return "./posters"+randomArray[currentItem].poster_path
+      else if (selectedItem=="movieList")
+        return "./posters"+movieArray[currentItem].poster_path
+      else if (selectedItem=="searchList")
+        if (searchArray.length > 0)
+           return "./posters"+searchArray[currentItem].poster_path
+      else if (selectedItem=="tvList")
+        return "./posters/"+tvArray[currentItem].poster_path
+     else return "./posters/movie-poster-credits-178.jpg"
     }
 
     if (sel == "title") {
@@ -177,6 +257,8 @@ Item {
       else if (selectedItem=="searchList") {
         if (searchArray.length > 0)
           return searchArray[currentItem].title
+      else if (selectedItem=="tvList")
+        return tvArray[currentItem].title
         else return "Nothing Found" }
     }
 
@@ -188,6 +270,8 @@ Item {
       else if (selectedItem=="searchList") {
          if (searchArray.length > 0)
            return Qt.openUrlExternally(movieDir+searchArray[currentItem].link)
+      else if (selectedItem=="tvList")
+        return "./posters/"+tvArray[currentItem].link
          else return Qt.openUrlExternally("https://www.imdb.com/") }
     }
 
@@ -256,6 +340,16 @@ Item {
          return "⭐  "+parseFloat(searchArray[currentItem].rating).toFixed(1).toString()
       else return "⭐  -" }
     }
+     if (sel == "id") {
+      if (selectedItem=="randomList")
+        return randomArray[currentItem].id
+      else if (selectedItem=="movieList")
+        return movieArray[currentItem].id
+      else if (selectedItem==="searchList") {
+        if (searchArray.length > 0)
+          return searchArray[currentItem].id
+        else return "12" }
+    }
   }
 
   function tvGenre() {
@@ -265,6 +359,6 @@ Item {
     }
     temp=temp.slice(0, -1).replace(/,/g, ', ')
     tvGenres=temp;
-    temp=null;
+    return null;
   }
 }

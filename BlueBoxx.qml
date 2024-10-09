@@ -1,30 +1,35 @@
 import QtQuick 2.9
 import QtQuick.Layouts 1.5
 import QtQuick.Controls 2.5 as QC25
-import QtQuick.Controls 1.5 as QC15
 import org.kde.plasma.components 2.0
 import org.kde.plasma.core 2.1
 import QtGraphicalEffects 1.5
-import QtQuick.Controls.Styles 1.4
 
 Image {
     id:root
     anchors.fill:rootMain
     source:"bk4.jpg"
 
-    readonly property color highLightColor:"gold"
+    readonly property color highLightColor:"#00aaff" //"#00aaff" //"#55aaff"
     property var movieArray:[]
     property var tvArray:[]
     property string tvGenres:""
     property var randomArray:[]
     property var searchArray:[]
+    property var collectionArray:[]
     property var usedArray:[]
+    property int collectionCount:0
+    property int collectionItems:0
+    property int movieCount:-1
+    property int idx:0
     property string selectedItem:"randomList"
-    property int currentItem:0
+    property int currentItem:-1
+    property int currentCollectionItem:-1
+    property bool keysActive:false
     readonly property string url1:"movies.json"
     readonly property string url2:"tvList.json"
     readonly property string movieDir:"/home/data/Movies/"
-    readonly property string tvDir:"/home/data/Movies/tvSeries/"
+    readonly property string tvDir:"/home/data/tvSeries/"
     readonly property string trailerDir:"/home/data/Movies/Trailers/"
 
     FontLoader {
@@ -32,18 +37,16 @@ Image {
         source: "KomikaTitle.ttf"
     }
 
-
     Scripts {id:scripts}
-
-    Search {id: searchPopup}
-
-    Info { id: mediaInfoPopup}
-
+    Collections {id:collectionsPopup}
+    CollectionsInfo {id:collectionInfo}
     TV {id:tvSeriesPopup}
+    Search {id: searchPopup}
+    Info { id: mediaInfoPopup}
+    //AddMovie{id:addMovie}
 
     QC25.TextField {
         id:tf
-        property int movieCount:searchArray.length > 0 ? searchArray.length : movieArray.length
         placeholderText:"Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
         anchors.top:root.top
         anchors.right:root.right
@@ -58,6 +61,9 @@ Image {
             selectedItem="searchList";
             scripts.searchMovies (tf.text);
             scripts.selectedViewChanged ();
+            let s1=tf.text
+            tf.text=""
+            tf.placeholderText="Movie Search...\t "+"                   ("+movieCount+")".replace(" ",'&#32')
            }
         focus:false
         placeholderTextColor:"gray"
@@ -70,12 +76,14 @@ Image {
             border.color: parent.focus || selectedItem=="searchList" ? highLightColor:"gray" //
             border.width: 1
             antialiasing:true
+            smooth:true
 
             IconItem {
                 source:"editclear"
                 width:36
                 height:30
                 smooth:true
+                antialiasing:true
                 visible:tf.text.length>0
                 anchors.top:parent.top
                 anchors.left:parent.right
@@ -119,17 +127,33 @@ Image {
     Component {
         id:movieView
 
-        Rectangle { width:185;height:295;
+        Rectangle { width:185;height:295; // slightly smaller than Gridview cell height, cell width
             color:"black";
             border.color:"lightgray"
             border.width:2;
-            radius: 8;
+            radius: 4;
             antialiasing:true
+            smooth:true
+
+                Text {
+                    anchors.bottom:parent.bottom
+                    anchors.left:parent.left
+                    anchors.bottomMargin:4
+                    anchors.leftMargin:8
+                    text:(selectedItem=="randomList" ) ? randomArray[index].title : (selectedItem=="movieList" ) ? movieArray[index].title : (selectedItem=="tvList") ? tvArray[index].name : (selectedItem=="searchList" ) ?  (searchArray.length > 0) ? searchArray[index].title:"No Results" : "No Results"
+                    color:"white"
+                    antialiasing:true
+                    font.pointSize:11
+                    width:parent.width*.95
+                    elide: Text.ElideRight
+                    wrapMode: Text.NoWrap
+                }
 
             Image {
-                source: (selectedItem=="randomList") ? "posters"+randomArray[index].poster_path  : (selectedItem=="movieList") ? "posters"+movieArray[index].poster_path : (selectedItem=="tvList") ? "posters/"+tvArray[index].poster_path : (selectedItem=="searchList") ? (searchArray.length > 0) ? "posters"+searchArray[index].poster_path : "posters/movie-poster-credits-178.jpg" : "posters/movie-poster-credits-178.jpg"
+                source: (selectedItem=="randomList" ) ? "./posters"+randomArray[index].poster_path  : (selectedItem=="movieList" ) ? "./posters"+movieArray[index].poster_path : (selectedItem=="tvList" ) ? "./posters/"+tvArray[index].poster_path : (selectedItem=="searchList" ) ? (searchArray.length > 0) ? "./posters"+searchArray[index].poster_path : "./posters/movie-poster-credits-178.jpg" : "./posters/movie-poster-credits-178.jpg"
                 fillMode : Image.PreserveAspectFit
-                sourceSize.height:parent.height*.87
+                //sourceSize.height:parent.height*.87
+                sourceSize.width:parent.width*.96
                 anchors.top:parent.top
                 anchors.topMargin:4
                 anchors.horizontalCenter:parent.horizontalCenter
@@ -139,24 +163,11 @@ Image {
                 cache:true
                 asynchronous:false
 
-                Text {
-                    anchors.top:parent.bottom
-                    anchors.left:parent.left
-                    anchors.topMargin:10
-                    anchors.leftMargin:0
-                    text:(selectedItem=="randomList") ? randomArray[index].title : (selectedItem=="movieList") ? movieArray[index].title : (selectedItem=="tvList") ? tvArray[index].name : (selectedItem=="searchList") ?  (searchArray.length > 0) ?searchArray[index].title:"No Results" : "No Results"
-                    color:"white"
-                    antialiasing:true
-                    font.pointSize:11
-                    width:parent.width*.95
-                    elide: Text.ElideRight
-                    wrapMode: Text.NoWrap
                 }
-            }
 
             MouseArea {
                 anchors.fill: parent
-                hoverEnabled:true
+                hoverEnabled:false
                 cursorShape:  Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                 onEntered:{
@@ -173,36 +184,100 @@ Image {
                     if (selectedItem=="tvList"){
                         tvSeriesPopup.open();
                         scripts.tvGenre(); }
+                    if (selectedItem=="randomList")
+                        if (randomArray[index].hasOwnProperty("collection")) {
+                            collectionArray=randomArray[index];
+                            currentCollectionItem=index;
+                            collectionsPopup.open();
+                        }
+                        else  mediaInfoPopup.open();
+                    if (selectedItem=="movieList")
+                        if (movieArray[index].hasOwnProperty("collection")) {
+                            collectionArray=movieArray[index];
+                            currentCollectionItem=index;
+                            collectionsPopup.open();
+                        }
+                        else  mediaInfoPopup.open();
+                    if (selectedItem=="searchList")
+                        if (searchArray[index].hasOwnProperty("collection")) {
+                            collectionArray=searchArray[index];
+                            currentCollectionItem=index;
+                            collectionsPopup.open();
+                        }
                     else  mediaInfoPopup.open();
+                }
 
+                Timer {
+                    running:true
+                    repeat:false
+                    interval:500
+                    onTriggered:parent.hoverEnabled=true
                 }
             }
         }
     }
 
-    Rectangle {
-        id:logoBox
-        anchors.top:root.top
-        anchors.left:root.left
-        anchors.margins:30
-        width:124
-        height:72
-        radius:12
-        color:"gray"
-        //border.color:"gray"
-        //border.width:.5
-        opacity:.25
-        antialiasing:true
-    }
+        Image {
+            id:logo
+            source:"logo.png"
+            width:124
+            height:64
+            anchors.top:root.top
+            anchors.left:root.left
+            anchors.topMargin:20
+            anchors.leftMargin:60
+            anchors.bottomMargin:20
+            antialiasing:true
+            smooth:true
+        }
+
 
     Text {
-        anchors.centerIn:logoBox
+        id:logoText
+        anchors.top:logo.bottom
+        anchors.left:logo.left
+        anchors.topMargin:5
+        anchors.leftMargin:-25
+        leftPadding:10
         text:"BlueBoxx"
-        color:"#55aaff"
-        font.pointSize:20
+        color:"white" //"#55aaff"
+        font.pointSize:18
+        font.letterSpacing: 10
         font.family:"Komika Title"
         antialiasing:true
+        font.weight : Font.Light
+        //visible:false
+        //style: Text.Outline
+        //styleColor: "lightgray"
     }
+
+     Keys.onPressed:{
+                if (event.key ==  Qt.Key_Control ) {
+                    if (selectedItem=="randomList") {
+                        event.accepted = true;
+                        scripts.selectedViewChanged ();
+                    }
+                }
+        }
+
+    Keys.onTabPressed: {
+                if (selectedItem=="randomList") {
+                    event.accepted = true;
+                    selectedItem="movieList";
+                    scripts.selectedViewChanged ();
+                }
+                else if (selectedItem=="movieList") {
+                    event.accepted = true;
+                    selectedItem="tvList";
+                    scripts.selectedViewChanged ();
+                }
+                else if (selectedItem=="tvList") {
+                    event.accepted = true;
+                    selectedItem="randomList";
+                    scripts.selectedViewChanged ();
+                }
+                else event.accepted = false;
+        }
 
     Item {
         id:headerView
@@ -210,7 +285,7 @@ Image {
         anchors.topMargin:40
         anchors.horizontalCenter:root.horizontalCenter
         height:80
-        width:root.width/2
+        width:root.width*.96
 
         Row {
             anchors.horizontalCenter:parent.horizontalCenter
@@ -220,12 +295,24 @@ Image {
 
             Rectangle {
                 id:r1
-                width:156;height:36;
+                width:166;height:36;
                 color:"transparent"
                 border.width:1
-                border.color:(selectedItem=="randomList" || ma1.containsMouse) ? highLightColor : "gray"
-                radius:8
+                border.color:"gray"
+                radius:6
                 antialiasing:true
+                smooth:true
+                z:-1
+
+                RectangularGlow {
+                    id: effect
+                    anchors.fill: parent
+                    glowRadius: 10
+                    spread: 0.15
+                    color: (selectedItem=="randomList" || ma1.containsMouse) ? highLightColor : "transparent"
+                    cornerRadius: 8
+                    smooth:true
+                }
 
 
                 Text {
@@ -234,6 +321,7 @@ Image {
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
+                    font.letterSpacing: 2
                     antialiasing:true
                 }
 
@@ -259,17 +347,29 @@ Image {
 
             Rectangle {
                 id:r2
-                width:156;height:36;
+                width:162;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="movieList" || ma2.containsMouse) ? highLightColor : "gray"
+                border.color:"gray"
                 border.width:1
-                radius:8
+                radius:6
                 antialiasing:true
+                smooth:true
+
+                RectangularGlow {
+                    id: effect2
+                    anchors.fill: parent
+                    glowRadius: 10
+                    spread: 0.15
+                    color: (selectedItem=="movieList" || ma2.containsMouse) ? highLightColor : "transparent"
+                    cornerRadius: 8
+                    smooth:true
+                }
 
                 Text {text:"Movies"
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
+                    font.letterSpacing: 4
                     anchors.centerIn:parent
                     antialiasing:true
                 }
@@ -289,12 +389,23 @@ Image {
 
             Rectangle {
                 id:r3
-                width:156;height:36;
+                width:162;height:36;
                 color:"transparent"
-                border.color:(selectedItem=="tvList" || ma3.containsMouse) ? highLightColor : "gray"
+                border.color:"gray"
                 border.width:1
-                radius:8
+                radius:6
                 antialiasing:true
+                smooth:true
+
+                RectangularGlow {
+                    id: effect3
+                    anchors.fill: parent
+                    glowRadius: 10
+                    spread: 0.15
+                    color: (selectedItem=="tvList" || ma3.containsMouse) ? highLightColor : "transparent"
+                    cornerRadius: 8
+                    smooth:true
+                }
 
                 Text {
                     anchors.centerIn:parent
@@ -302,6 +413,7 @@ Image {
                     color:"white"
                     font.family:"Komika Title"
                     font.pointSize:20
+                    font.letterSpacing: 4
                     antialiasing:true
                 }
 
@@ -328,92 +440,114 @@ Image {
             height:.5
             color:"gray"
             antialiasing:true
+            smooth:true
         }
     }
-
-    QC15.ScrollView {
-        id: scrollView
-        anchors.top:headerView.bottom
-        anchors.bottom:root.bottom
-        anchors.left:root.left
-        anchors.right:root.right
-        anchors.topMargin:30
-        anchors.leftMargin:5
-        anchors.rightMargin:5
-        anchors.bottomMargin:1
-        width:root.width
-        height:root.height-headerView.height
-        clip:false
-        focus:true
-        verticalScrollBarPolicy : Qt.ScrollBarAsNeeded
-        enabled : hovered || pressed
-        __wheelAreaScrollSpeed: 310
-        style: ScrollViewStyle {
-        transientScrollBars:true
-        scrollToClickedPosition : true
-        handle: Rectangle {
-            implicitWidth: 8
-            //implicitHeight: 400
-            color: "white"
-            opacity:.85
-            radius:12
-        }
-        scrollBarBackground: Rectangle {
-            implicitWidth: 8
-            //implicitHeight: parent.height
-            color: "black"
-            radius:12
-            opacity:.25
-        }
-    }
-
-
         GridView {
             id:listView
             focus:true
             visible:true
-            parent:scrollView
-            anchors.top:parent.top
+            opacity:0
+            anchors.top:headerView.bottom
             anchors.bottom:parent.bottom
             anchors.left:parent.left
             anchors.right:parent.right
             width:parent.width
-            height:parent.height
+            height:parent.height-headerView.height-75
+            cellWidth: 200; cellHeight: 315
+            anchors.topMargin:30
+            anchors.rightMargin:1
             model:1
             boundsBehavior: Flickable.StopAtBounds
-            cacheBuffer:256
+            cacheBuffer:512
+            QC25.ScrollBar.vertical: QC25.ScrollBar {
+                id:vbar
+                active:hovered || keysActive
+                //policy: active ? "AlwaysOn" : "AlwaysOff"
+                snapMode : "SnapOnRelease"
+                contentItem: Rectangle {
+                    id:rect1
+                    implicitWidth: 4
+                    //implicitHeight:contentItem.height/4
+                    radius:6
+                    color: "white"
+                    antialiasing:true
+                    smooth:true
+                    opacity:vbar.active || keysActive  ? 1:0
+                    Behavior on opacity {
+                    OpacityAnimator {
+                        duration: units.longDuration
+                        easing.type: opacity ? Easing.OutCubic:Easing.InCubic
+                    }}
+                }
+                background: Rectangle {
+                    id:rect2
+                    implicitWidth: 4
+                    radius:6
+                    opacity:vbar.active || keysActive  ? .45:0
+                    color: "black"
+                    antialiasing:true
+                    smooth:true
+                    Behavior on opacity {
+                    OpacityAnimator {
+                        duration: units.longDuration
+                        easing.type: opacity ? Easing.OutCubic:Easing.InCubic
+                    }}
+                }
+            }
+
+            Timer{
+                id:keyTimer
+                running:false
+                repeat:false
+                interval:500
+                onTriggered:keysActive=false
+            }
+
+
             clip:true
-            interactive:false
-            snapMode :GridView.SnapOneRow
+            interactive:true
+            snapMode :GridView.SnapToRow
             keyNavigationEnabled: true
             keyNavigationWraps : false
+
             Keys.onPressed:{
                 if(event.key === Qt.Key_PageUp){
                     if (!atYBeginning) {
-                    listView.flick(0, contentY-=620);}
+                        keysActive=true;
+                        listView.flick(0, contentY-=630);
+                    }
                 }
                 else if(event.key === Qt.Key_PageDown){
                     if (!atYEnd) {
-                       listView.flick(0, contentY+=620)
+                        keysActive=true;
+                        listView.flick(0, contentY+=630);
                     }
                 }
                 else if(event.key === Qt.Key_Home){
-                    listView.positionViewAtBeginning()
+                    keysActive=true;
+                    keyTimer.start();
+                    listView.positionViewAtBeginning();
                 }
                 else if(event.key === Qt.Key_End){
-                    listView.positionViewAtEnd()
+                    keysActive=true;
+                    keyTimer.start();
+                    listView.positionViewAtEnd();
                 }
             }
             Keys.onUpPressed: {
                 if (!atYBeginning) {
-                listView.flick(0, contentY-=310)
-                } }
+                    keysActive=true;
+                    listView.flick(0, contentY-=315);
+                }
+            }
             Keys.onDownPressed:{
                  if (!atYEnd) {
-                listView.flick(0, contentY+=310)
-                 } }
+                    keysActive=true;
+                    listView.flick(0, contentY+=315)
+                 }
+            }
             delegate:null
-            cellWidth: 200; cellHeight: 310
             onDelegateChanged:{
                 opacity=0;
                 opacity=1;}
@@ -423,15 +557,18 @@ Image {
                         easing.type: Easing.InCubic
                     }}
                     Component.onCompleted: {
-                         listView.visible=true;
+                         listView.opacity=1;
                     }
 
-                    Behavior on contentY{ // smooth scroll animation
+                    Behavior on contentY{
+                        // smooth scroll animation
                         NumberAnimation {
+                            id:smoothScroll
                             duration: 1000
                             easing.type: Easing.OutQuad
+                            onRunningChanged: !running ?  keyTimer.start() : ""
+
                         }
                     }
         }
-    }
 }

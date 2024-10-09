@@ -7,7 +7,7 @@ import org.kde.plasma.core 2.1
 // *** blueboxx media manager app
 // *** https://github.com/txhammer68/blueboxx
 // *** 03/2024
-// *** json arrays for movie/tv shows
+// *** json arrays for movie/tv shows info
 // *** tmdb api for media info and art work
 // *********************************************
 
@@ -15,11 +15,13 @@ import org.kde.plasma.core 2.1
 ApplicationWindow {
    id:rootMain
    visible: true
-   color:"black"
+   color:Theme.viewBackgroundColor
    width:Screen.width
    height:Screen.height
    title: "BlueBoxx"
    //flags: Qt.WindowStaysOnTopHint
+
+   onClosing: rootMain.destroy();
 
    Shortcut {
       sequence: "Esc"

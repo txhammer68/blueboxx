@@ -27,15 +27,25 @@ QC25.Popup {
         searchYear='';
         Qt.cursorShape=Qt.ArrowCursor;
         scrollView.focus=true
+        bkBlur.opacity=0;
+    }
+
+     onOpened:{
+         Qt.cursorShape=Qt.ArrowCursor;
+         bkBlur.opacity=1
     }
 
     QC25.Overlay.modal: GaussianBlur {
         source: ShaderEffectSource {
+            id:bkBlur
             sourceItem: bluebox
             live: false
         }
-        radius: 16
+        radius: 24
         samples: radius * 2
+        opacity:0
+        smooth:true
+        Behavior on opacity { NumberAnimation { duration: 300 } }
     }
 
     enter: Transition {
@@ -44,7 +54,7 @@ QC25.Popup {
             from: 0.6;
             to: 1.0;
             easing.type: Easing.OutBack
-            duration: 500
+            duration: 600
         }
     }
 
@@ -54,38 +64,17 @@ QC25.Popup {
             from: 1.0
             to: 0.6;
             easing.type: Easing.InBack
-            duration: 300
+            duration: 400
         }
     }
 
     background:Rectangle{
-        color:"black"
+        color:"#001d2a"
         radius:8
-
-        Image{
-            id:backgroundImg
-            source:"bk2.png"
-            anchors.centerIn:parent
-            width:parent.width
-            height:parent.height
-            fillMode : Image.PreserveAspectCrop
-            smooth:true
-            antialiasing:true
-            mipmap: true
-            visible:false
-        }
+        antialiasing:true
+        smooth:true
 
 
-            OpacityMask {
-                anchors.fill: backgroundImg
-                source: backgroundImg
-                maskSource: Rectangle {
-                    width: backgroundImg.width
-                    height: backgroundImg.height
-                    radius: 8
-                    visible: false // this also needs to be invisible or it will cover up the image
-                }
-            }
 
         Text {
             id:title
@@ -104,9 +93,11 @@ QC25.Popup {
             anchors.horizontalCenter:title.horizontalCenter
             anchors.topMargin:30
             width:parent.width*.90
-            height:.5
-            color:"gray"
+            height:1
+            color:"white"
+            opacity:.25
             antialiasing:true
+            smooth:true
         }
 
         Text {
@@ -234,8 +225,8 @@ QC25.Popup {
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color=highLightColor
-                    onExited:parent.border.color="gray"
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="transparent"
                     onClicked: {
                         tf.text=""
                         tf.focus=false
@@ -254,6 +245,7 @@ QC25.Popup {
                 color:"transparent"
                 border.color:"gray"
                 antialiasing:true
+                smooth:true
 
                 Text {
                     anchors.centerIn:parent
@@ -269,8 +261,8 @@ QC25.Popup {
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color=highLightColor
-                    onExited:parent.border.color="gray"
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="transparent"
                     onClicked:{
                         childGroup.checkState=0;
                         tempString='';
@@ -286,9 +278,11 @@ QC25.Popup {
             anchors.horizontalCenter:title.horizontalCenter
             anchors.topMargin:40
             width:parent.width*.90
-            height:.5
-            color:"gray"
+            height:1
+            color:"white"
+            opacity:.25
             antialiasing:true
+            smooth:true
         }
 
         Text {
@@ -312,6 +306,8 @@ QC25.Popup {
             color:"black"
             opacity:.45
             radius:8
+            antialiasing:true
+            smooth:true
         }
 
         Row {
@@ -359,6 +355,7 @@ QC25.Popup {
                 color:"transparent"
                 border.color:"gray"
                 antialiasing:true
+                smooth:true
 
                 Text {
                     anchors.centerIn:parent
@@ -374,8 +371,8 @@ QC25.Popup {
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                    onEntered:parent.border.color=highLightColor
-                    onExited:parent.border.color="gray"
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="transparent"
                     onClicked:{
                         tf.text=""
                         tf.focus=false
@@ -393,6 +390,8 @@ QC25.Popup {
                 radius:8
                 color:"transparent"
                 border.color:"gray"
+                antialiasing:true
+                smooth:true
 
                 Text {
                     anchors.centerIn:parent
@@ -407,8 +406,8 @@ QC25.Popup {
                     anchors.fill: parent
                     cursorShape:  Qt.PointingHandCursor
                     hoverEnabled:true
-                    onEntered:parent.border.color=highLightColor
-                    onExited:parent.border.color="gray"
+                    onEntered:parent.color=highLightColor
+                    onExited:parent.color="transparent"
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                     onClicked:{
                         childGroup2.checkState=0;
