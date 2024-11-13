@@ -4,7 +4,7 @@
 * Simple python/qml app for organizing movies/tv shows
 * Using json arrays for media lookup
 * Lighweight and Fast
-* Designed for 1920x1080 screens
+* Designed for HTPC 1920x1080 screens
 
 * This is a framework for your existing media
 * Create an account on https://www.themoviedb.org/
@@ -24,7 +24,6 @@
 * Linux, preferrably KDE Plasma distro
 * Python 3, python3-pyqt5, python3-pyqt5.quick, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtQml, PyQt5.QtWidgets
 * mpv, vlc or other media player
-* Should work on Windows,Mac OS as python is cross platform, not tested.
 
 ### Usage
 * Launch app with python3 blueboxx.py
@@ -39,8 +38,8 @@
 * Change locations for your json arrays, movie, tv and trailer locations in
     * BlueBoxx.qml
 * Within json array, media links are predefined as "media title - Trailer.mp4", "media title.mp4", change for your needs
-* Why Blueboxx, cause Redbox provided most of the titles :)
 * Based on Qt5, but should work with Qt6
+* Why Blueboxx, cause Redbox provided most of the titles :)
 * https://github.com/txhammer68/blueboxx
 
 <img alt="preview" src="preview.gif" width="1400">
